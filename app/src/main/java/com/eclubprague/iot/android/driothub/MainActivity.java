@@ -46,35 +46,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-
-
-    void doit(String code)
-    {
-        // Create an execution environment.
-        Context cx = Context.enter();
-
-        // Turn compilation off.
-        cx.setOptimizationLevel(-1);
-
-        try
-        {
-            // Initialize a variable scope with bindnings for
-            // standard objects (Object, Function, etc.)
-            Scriptable scope = cx.initStandardObjects();
-
-            // Set a global variable that holds the activity instance.
-            ScriptableObject.putProperty(
-                    scope, "TheActivity", Context.javaToJS(this, scope));
-
-            // Evaluate the script.
-            cx.evaluateString(scope, code, "doit:", 1, null);
-        }
-        finally
-        {
-            Context.exit();
-        }
-    }
-
+    
     @Override
     protected void onStart() {
         super.onStart();
@@ -114,28 +86,9 @@ public class MainActivity extends ActionBarActivity {
         }
 
         if(id == R.id.action_get_current_gps) {
-            showLocation();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void showLocation() {
-        String msg = "connected: " + Boolean.toString(locationListenerService.getConnected()) +
-                ", latitude: " + Double.toString(locationListenerService.getLatitude()) +
-                ", longitude: " + Double.toString(locationListenerService.getLongitude());
-
-        doit(
-                "var widgets = Packages.android.widget;\n" +
-                        "var view = new widgets.TextView(TheActivity);\n" +
-                        "TheActivity.setContentView(view);\n" +
-                        "var text = '" +
-                        msg +
-                        "';\n" +
-                        "view.append(text);"
-        );
-
-        //Toast.makeText(this, msg,Toast.LENGTH_SHORT).show();
     }
 }
