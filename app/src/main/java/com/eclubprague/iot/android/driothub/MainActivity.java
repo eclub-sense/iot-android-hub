@@ -29,6 +29,7 @@ public class MainActivity extends ActionBarActivity {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             LocationListenerService.LocationListenerBinder binder = (LocationListenerService.LocationListenerBinder) service;
             locationListenerService = binder.getService();
+            binder.setServiceContext(MainActivity.this);
             bound = true;
         }
 
