@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DrIoTHub</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">Loading GPS data, please wait ... </string>
     <string name="action_settings">Settings</string>
     <string name="action_get_current_gps">Show GPS</string>
 </resources>

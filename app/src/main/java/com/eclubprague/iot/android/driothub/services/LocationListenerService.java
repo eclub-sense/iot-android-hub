@@ -179,6 +179,7 @@ public class LocationListenerService extends Service implements GoogleApiClient.
 
     private void doit(String code)
     {
+
         if(context == null) {
             return;
         }
