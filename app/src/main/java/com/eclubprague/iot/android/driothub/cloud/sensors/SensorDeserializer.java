@@ -23,6 +23,14 @@ public class SensorDeserializer implements JsonDeserializer<Sensor> {
                 return context.deserialize(json, ESCThermometer.class);
             } else if (sensorType.equals(SensorType.LED)) {
                 return context.deserialize(json, ESCLed.class);
+            } else if (sensorType.equals(SensorType.GPS)) {
+                return context.deserialize(json, GPS.class);
+            } else if (sensorType.equals(SensorType.ACCELEROMETER)) {
+                return context.deserialize(json, Accelerometer.class);
+            } else if (sensorType.equals(SensorType.LIGHT)) {
+                return context.deserialize(json, LightSensor.class);
+            } else if (sensorType.equals(SensorType.PROXIMITY)) {
+                return context.deserialize(json, ProximitySensor.class);
             }
         }
         throw new JsonParseException("We can't deserialize this type of Sensor.");

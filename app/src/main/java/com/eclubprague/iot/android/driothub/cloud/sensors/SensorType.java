@@ -8,6 +8,9 @@ public enum SensorType {
     THERMOMETER(0x41, "thermometer"), // 0x41
     LED(0x1, "led"),
     GPS(0x2, "gps"),
+    ACCELEROMETER(0x4, "accelerometer"),
+    LIGHT(0x5, "light_sensor"),
+    PROXIMITY(0x6, "proximity_sensor"),
     BUILTIN(0X3, "builtin");
 
     private final int code;

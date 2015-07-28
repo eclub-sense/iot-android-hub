@@ -16,8 +16,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.eclubprague.iot.android.driothub.MainActivity;
+import com.eclubprague.iot.android.driothub.cloud.sensors.Accelerometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.BuiltInSensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.GPS;
+import com.eclubprague.iot.android.driothub.cloud.sensors.LightSensor;
+import com.eclubprague.iot.android.driothub.cloud.sensors.ProximitySensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -208,6 +211,21 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     public void onSensorChanged(SensorEvent event) {
         switch(event.sensor.getType()) {
 
+            case android.hardware.Sensor.TYPE_ACCELEROMETER:
+                ( (Accelerometer)(builtInSensors.get(event.sensor.getName())) ).setData(
+                        event.values[0], event.values[1], event.values[2]
+                );
+                break;
+            case android.hardware.Sensor.TYPE_LIGHT:
+                ( (LightSensor)(builtInSensors.get(event.sensor.getName())) ).setData(
+                        event.values[0]
+                );
+                break;
+            case android.hardware.Sensor.TYPE_PROXIMITY:
+                ( (ProximitySensor)(builtInSensors.get(event.sensor.getName())) ).setData(
+                        event.values[0]
+                );
+                break;
             default:
                 List<Float> data = new ArrayList<>();
                 for(int i = 0; i < event.values.length; i++) {
@@ -246,8 +264,23 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
         for(int i = 0; i < deviceSensors.size(); i++) {
             android.hardware.Sensor sensor = deviceSensors.get(i);
-            builtInSensors.put(sensor.getName(),
-                    new BuiltInSensor(i, sensor.getName()));
+            switch(sensor.getType()) {
+                case android.hardware.Sensor.TYPE_ACCELEROMETER:
+                    builtInSensors.put(sensor.getName(),
+                            new Accelerometer(i, sensor.getName()));
+                    break;
+                case android.hardware.Sensor.TYPE_LIGHT:
+                    builtInSensors.put(sensor.getName(),
+                            new LightSensor(i, sensor.getName()));
+                    break;
+                case android.hardware.Sensor.TYPE_PROXIMITY:
+                    builtInSensors.put(sensor.getName(),
+                            new ProximitySensor(i, sensor.getName()));
+                    break;
+                default:
+                builtInSensors.put(sensor.getName(),
+                        new BuiltInSensor(i, sensor.getName()));
+            }
             mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
@@ -301,18 +334,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                 //use a handler to run a toast that shows the current timestamp
                 handler.post(new Runnable() {
                     public void run() {
-
-
                         BuiltInSensorsProviderService.this.activityList.get(0).actualizeListView(getBuiltInSensors());
-
-//                        //get the current timeStamp
-//                        Calendar calendar = Calendar.getInstance();
-//                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd:MMMM:yyyy HH:mm:ss a");
-//                        final String strDate = simpleDateFormat.format(calendar.getTime());
-//                        //show the toast
-//                        int duration = Toast.LENGTH_SHORT;
-//                        Toast toast = Toast.makeText(getApplicationContext(), strDate, duration);
-//                        toast.show();
                     }
                 });
             }
