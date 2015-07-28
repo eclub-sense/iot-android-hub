@@ -19,9 +19,6 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
-
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -172,58 +169,6 @@ public class LocationListenerService extends Service implements GoogleApiClient.
             longitude = mLastLocation.getLongitude();
         }
 
-        showLocation();
-    }
-
-    //-----------------------------------------------------------------------
-
-    private void doit(String code)
-    {
-
-        if(context == null) {
-            return;
-        }
-        // Create an execution environment.
-        org.mozilla.javascript.Context cx = org.mozilla.javascript.Context.enter();
-
-        // Turn compilation off.
-        cx.setOptimizationLevel(-1);
-
-        try
-        {
-            // Initialize a variable scope with bindnings for
-            // standard objects (Object, Function, etc.)
-            Scriptable scope = cx.initStandardObjects();
-
-            // Set a global variable that holds the activity instance.
-            ScriptableObject.putProperty(
-                    scope, "TheActivity", org.mozilla.javascript.Context.javaToJS(context, scope));
-
-            // Evaluate the script.
-            cx.evaluateString(scope, code, "doit:", 1, null);
-        }
-        finally
-        {
-            org.mozilla.javascript.Context.exit();
-        }
-    }
-
-    private void showLocation() {
-        String msg = "connected: " + Boolean.toString(connected) +
-                ", latitude: " + Double.toString(latitude) +
-                ", longitude: " + Double.toString(longitude);
-
-        doit(
-                "var widgets = Packages.android.widget;\n" +
-                        "var view = new widgets.TextView(TheActivity);\n" +
-                        "TheActivity.setContentView(view);\n" +
-                        "var text = '" +
-                        msg +
-                        "';\n" +
-                        "view.append(text);"
-        );
-
-        //Toast.makeText(this, "got GPS update",Toast.LENGTH_SHORT).show();
 
     }
 }

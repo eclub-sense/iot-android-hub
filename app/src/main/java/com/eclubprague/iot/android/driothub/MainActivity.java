@@ -17,9 +17,6 @@ import com.eclubprague.iot.android.driothub.ui.BuiltInSensorsListViewAdapter;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
-import org.mozilla.javascript.*;
-import org.mozilla.javascript.Context;
-
 import java.util.ArrayList;
 import java.util.List;
 
