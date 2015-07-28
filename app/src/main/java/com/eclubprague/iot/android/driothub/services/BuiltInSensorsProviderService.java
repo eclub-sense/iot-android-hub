@@ -70,6 +70,10 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     @Override
     public IBinder onBind(Intent intent) {
+
+//        if(!sensorsCollectionsInitialized) {
+//            initBuiltInSensorsCollection();
+//        }
         mGoogleApiClient.connect();
         startTimer();
         return binder;
@@ -90,7 +94,6 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         super.onCreate();
         buildGoogleApiClient();
         createLocationRequest();
-        initBuiltInSensorsCollection();
         //Run the service in background thread
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 android.os.Process.THREAD_PRIORITY_BACKGROUND);
@@ -229,7 +232,13 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     private String gpsKey = "GPS_phamtdat";
 
-    private void initBuiltInSensorsCollection() {
+    private boolean sensorsCollectionsInitialized = false;
+
+    public void initBuiltInSensorsCollection(List<MainActivity> activityList) {
+        this.activityList = activityList;
+        context = activityList.get(0);
+        if(context == null) return;
+        sensorsCollectionsInitialized = true;
         mSensorManager = (SensorManager) context.getSystemService(context.SENSOR_SERVICE);
         deviceSensors = mSensorManager.getSensorList(android.hardware.Sensor.TYPE_ALL);
 

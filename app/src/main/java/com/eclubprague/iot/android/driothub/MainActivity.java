@@ -36,11 +36,14 @@ public class MainActivity extends ActionBarActivity {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             BuiltInSensorsProviderService.BuiltInSensorsProviderBinder binder =
                     (BuiltInSensorsProviderService.BuiltInSensorsProviderBinder) service;
-            builtInSensorsProviderService = binder.getService();
-            binder.setServiceContext(MainActivity.this);
             List<MainActivity> activityList = new ArrayList<>();
             activityList.add(MainActivity.this);
-            binder.setServiceActivity(activityList);
+            //binder.setServiceActivity(activityList);
+            /*builtInSensorsProviderService = */binder.getService().initBuiltInSensorsCollection(activityList);
+//            binder.setServiceContext(MainActivity.this);
+//            List<MainActivity> activityList = new ArrayList<>();
+//            activityList.add(MainActivity.this);
+//            binder.setServiceActivity(activityList);
             bound = true;
         }
 
@@ -63,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onStart() {
         super.onStart();
         // Bind to LocalService
-        Intent intent = new Intent(this, LocationListenerService.class);
+        Intent intent = new Intent(this, BuiltInSensorsProviderService.class);
         //startService(intent);
         bindService(intent, connection, android.content.Context.BIND_AUTO_CREATE);
     }
