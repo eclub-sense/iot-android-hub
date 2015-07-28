@@ -7,19 +7,29 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
+import com.eclubprague.iot.android.driothub.services.BuiltInSensorsProviderService;
 import com.eclubprague.iot.android.driothub.services.LocationListenerService;
+import com.eclubprague.iot.android.driothub.ui.BuiltInSensorsListViewAdapter;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
 import org.mozilla.javascript.*;
 import org.mozilla.javascript.Context;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends ActionBarActivity {
 
     private boolean bound = false;
-    private LocationListenerService locationListenerService;
+    //private LocationListenerService locationListenerService;
+
+    private BuiltInSensorsProviderService builtInSensorsProviderService;
+
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection connection = new ServiceConnection() {
 
@@ -27,9 +37,13 @@ public class MainActivity extends ActionBarActivity {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
-            LocationListenerService.LocationListenerBinder binder = (LocationListenerService.LocationListenerBinder) service;
-            locationListenerService = binder.getService();
+            BuiltInSensorsProviderService.BuiltInSensorsProviderBinder binder =
+                    (BuiltInSensorsProviderService.BuiltInSensorsProviderBinder) service;
+            builtInSensorsProviderService = binder.getService();
             binder.setServiceContext(MainActivity.this);
+            List<MainActivity> activityList = new ArrayList<>();
+            activityList.add(MainActivity.this);
+            binder.setServiceActivity(activityList);
             bound = true;
         }
 
@@ -45,6 +59,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        listView = (ListView) findViewById(R.id.builtins_list);
     }
 
     @Override
@@ -91,4 +106,19 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    //-------------------------------------------------
+    //-------------------------------------------------
+
+    static ListView listView;
+
+    public void actualizeListView(List<Sensor> sensors) {
+        BuiltInSensorsListViewAdapter adapter = new BuiltInSensorsListViewAdapter(this,
+                android.R.layout.simple_list_item_1, sensors);
+
+        // Assign adapter to ListView
+        listView.setAdapter(adapter);
+        listView.invalidate();
+    }
+
 }

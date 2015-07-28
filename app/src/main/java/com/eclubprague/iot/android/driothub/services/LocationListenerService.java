@@ -224,5 +224,6 @@ public class LocationListenerService extends Service implements GoogleApiClient.
         );
 
         //Toast.makeText(this, "got GPS update",Toast.LENGTH_SHORT).show();
+
     }
 }

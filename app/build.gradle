@@ -20,13 +20,18 @@ android {
 }
 
 repositories {
-    mavenCentral() /* The standard Java Maven repository. */
-    maven { url "http://repo1.maven.org/maven2/" }
+    mavenCentral()
+    maven { url 'http://maven.restlet.org' }
 }
+
+ext.restletVersion = "2.2.3"
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'org.mozilla:rhino:1.7.7'
     compile 'com.google.android.gms:play-services:7.5.0'
+    compile "org.restlet.android:org.restlet:${restletVersion}"
+    compile "org.restlet.android:org.restlet.ext.gson:${restletVersion}"
+    compile 'commons-codec:commons-codec:1.10'
 }
