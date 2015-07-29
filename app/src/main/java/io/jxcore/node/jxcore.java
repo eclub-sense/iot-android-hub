@@ -292,13 +292,16 @@ public class jxcore {
 
     prepareEngine(home + "/www/jxcore", assets.toString());
 
-    String mainFile = FileManager.readFile("www/jxcore/app.js");
+    String mainFile = FileManager.readFile("jxcore_cordova.js");
+    String appFile = FileManager.readFile("www/jxcore/app.js");
+
 
     String data = "process.setPaths = function(){ process.cwd = function() { return '" + home
         + "/www/jxcore';};\n" 
         + "process.userPath ='" + activity.getBaseContext().getCacheDir().toString() + "';\n"
         + "};"
-        + mainFile;
+        + mainFile
+        + appFile;
     
     defineMainFile(data);
 
