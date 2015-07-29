@@ -20,6 +20,8 @@ import com.google.android.gms.location.LocationServices;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.jxcore.node.jxcore;
+
 public class MainActivity extends ActionBarActivity {
 
     private boolean bound = false;
@@ -60,6 +62,9 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listView = (ListView) findViewById(R.id.builtins_list);
+
+        // Tak to zkusme.
+        jxcore.Prepare();
     }
 
     @Override
