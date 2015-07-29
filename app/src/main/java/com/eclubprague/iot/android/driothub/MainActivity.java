@@ -64,7 +64,7 @@ public class MainActivity extends ActionBarActivity {
         listView = (ListView) findViewById(R.id.builtins_list);
 
         // Tak to zkusme.
-        jxcore.Prepare();
+        jxcore.Prepare(this);
     }
 
     @Override

@@ -127,10 +127,14 @@ public class jxcore {
     Log.e(LOGTAG, "WTF?");
   }
 
-  public static void Prepare() {
+  public static void Prepare(Activity activity) {
     java_callbacks = new HashMap<>();
     JXcoreExtension.LoadExtensions();
     JXMobile.Initialize();
+
+    addon = new jxcore();
+    jxcore.activity = activity;
+    startProgress();
   }
 
   public interface JXcoreCallback {
