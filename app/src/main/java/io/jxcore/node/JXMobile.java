@@ -21,7 +21,7 @@ public class JXMobile {
         String message = (String) params.get(0);
         String stack = (String) params.get(1);
 
-        Log.e("jxcore", "Error!: " + message + "\nStack: " + stack);
+        Log.e("www/jxcore", "Error!: " + message + "\nStack: " + stack);
       }
     });
 

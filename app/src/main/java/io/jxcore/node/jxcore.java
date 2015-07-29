@@ -9,9 +9,6 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -295,14 +292,13 @@ public class jxcore {
 
     prepareEngine(home + "/www/jxcore", assets.toString());
 
-    //String mainFile = FileManager.readFile("jxcore_cordova.js");
+    String mainFile = FileManager.readFile("www/jxcore/app.js");
 
     String data = "process.setPaths = function(){ process.cwd = function() { return '" + home
         + "/www/jxcore';};\n" 
         + "process.userPath ='" + activity.getBaseContext().getCacheDir().toString() + "';\n"
         + "};"
-        //+ mainFile
-            ;
+        + mainFile;
     
     defineMainFile(data);
 
