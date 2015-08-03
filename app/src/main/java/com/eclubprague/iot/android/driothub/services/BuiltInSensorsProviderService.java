@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -16,12 +17,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.eclubprague.iot.android.driothub.MainActivity;
+import com.eclubprague.iot.android.driothub.tasks.UserRegisterTask;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Accelerometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.BuiltInSensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.GPS;
 import com.eclubprague.iot.android.driothub.cloud.sensors.LightSensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.ProximitySensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
+import com.eclubprague.iot.android.driothub.cloud.user.User;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -42,7 +45,8 @@ import java.util.TimerTask;
  * Created by Dat on 28.7.2015.
  */
 public class BuiltInSensorsProviderService extends Service implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener, SensorEventListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, SensorEventListener,
+        UserRegisterTask.UserRegisterCallbacks {
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -50,6 +54,11 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     private List<MainActivity> activityList = new ArrayList<>();
 
     private final IBinder binder = new BuiltInSensorsProviderBinder();
+
+    @Override
+    public void handleUserRegistered(UserRegisterTask.UserRegisterResult result) {
+        Toast.makeText(this, "User registration done", Toast.LENGTH_SHORT).show();
+    }
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -77,6 +86,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 //        if(!sensorsCollectionsInitialized) {
 //            initBuiltInSensorsCollection();
 //        }
+        new UserRegisterTask(this).execute(new User("DAT", "999"));
         mGoogleApiClient.connect();
         startTimer();
         return binder;
@@ -260,26 +270,26 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         mSensorManager = (SensorManager) context.getSystemService(context.SENSOR_SERVICE);
         deviceSensors = mSensorManager.getSensorList(android.hardware.Sensor.TYPE_ALL);
 
-        builtInSensors.put(gpsKey, new GPS(12346, "gps_secret"));
+        builtInSensors.put(gpsKey, new GPS("12346", "gps_secret"));
 
         for(int i = 0; i < deviceSensors.size(); i++) {
             android.hardware.Sensor sensor = deviceSensors.get(i);
             switch(sensor.getType()) {
                 case android.hardware.Sensor.TYPE_ACCELEROMETER:
                     builtInSensors.put(sensor.getName(),
-                            new Accelerometer(i, sensor.getName()));
+                            new Accelerometer(Integer.toString(i), sensor.getName()));
                     break;
                 case android.hardware.Sensor.TYPE_LIGHT:
                     builtInSensors.put(sensor.getName(),
-                            new LightSensor(i, sensor.getName()));
+                            new LightSensor(Integer.toString(i), sensor.getName()));
                     break;
                 case android.hardware.Sensor.TYPE_PROXIMITY:
                     builtInSensors.put(sensor.getName(),
-                            new ProximitySensor(i, sensor.getName()));
+                            new ProximitySensor(Integer.toString(i), sensor.getName()));
                     break;
                 default:
                 builtInSensors.put(sensor.getName(),
-                        new BuiltInSensor(i, sensor.getName()));
+                        new BuiltInSensor(Integer.toString(i), sensor.getName()));
             }
             mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         }

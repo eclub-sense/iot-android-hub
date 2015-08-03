@@ -15,7 +15,7 @@ public class Accelerometer extends Sensor {
     public Accelerometer() {
         super();
     }
-    public Accelerometer(int uuid, String secret) {
+    public Accelerometer(String uuid, String secret) {
         super(uuid, SensorType.ACCELEROMETER, secret);
     }
 

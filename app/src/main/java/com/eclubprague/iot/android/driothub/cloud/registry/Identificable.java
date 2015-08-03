@@ -5,6 +5,6 @@ package com.eclubprague.iot.android.driothub.cloud.registry;
  */
 public interface Identificable {
 
-    public int getIntUuid();
+    public String getUuid();
 
 }

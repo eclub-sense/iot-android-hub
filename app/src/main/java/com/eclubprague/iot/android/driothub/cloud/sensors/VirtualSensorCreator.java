@@ -5,7 +5,7 @@ package com.eclubprague.iot.android.driothub.cloud.sensors;
  */
 public class VirtualSensorCreator {
 
-    public static Sensor createSensorInstance(int uuid, SensorType type, String secret) {
+    public static Sensor createSensorInstance(String uuid, SensorType type, String secret) {
         switch (type) {
             case THERMOMETER : return new ESCThermometer(uuid, secret);
             case LED : return new ESCLed(uuid, secret);

@@ -1,6 +1,7 @@
 package com.eclubprague.iot.android.driothub.cloud.hubs;
 
 import com.eclubprague.iot.android.driothub.cloud.registry.Identificable;
+import com.eclubprague.iot.android.driothub.cloud.user.User;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,17 +10,26 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Hub implements Identificable {
 
-    @Expose
-    @SerializedName("@type") private String jsonType = "hub";
-    @Expose protected int uuid;
+    /*@Expose
+    @SerializedName("@type") private String jsonType = "hub";*/
+    @Expose protected String uuid;
     @Expose (deserialize = false) protected String status = "connected";
+    @Expose (deserialize = false) protected String username;
+    @Expose (deserialize = false) protected String password;
+    @Expose (deserialize = false) protected String type = "LOGIN";
 
-    public Hub(int uuid) {
+
+    private User user;
+
+    public Hub(String uuid, User user) {
         this.uuid = uuid;
+        this.user = user;
+        this.username = user.getUsername();
+        this.password = user.getPassword();
     }
 
     @Override
-    public int getIntUuid() {
+    public String getUuid() {
         return uuid;
     }
 
@@ -34,6 +44,8 @@ public class Hub implements Identificable {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public User getUser() {return user;}
 
     @Override
     public String toString() {

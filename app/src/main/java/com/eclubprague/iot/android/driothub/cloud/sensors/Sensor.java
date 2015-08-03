@@ -17,12 +17,12 @@ import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 public abstract class Sensor implements Identificable {
 
     @Expose @SerializedName("@type") private String jsonType = "sensor";
-    @Expose protected int uuid;
+    @Expose protected String uuid;
     @Expose protected SensorType type = SensorType.THERMOMETER;
     @Expose (serialize = false) protected String secret;
     protected int incr;
     @Expose (deserialize = false) protected int battery;
-    @Expose (deserialize = false) protected int hubID;
+    @Expose (deserialize = false) protected String hubID;
     protected Hub hub;
     protected byte reserved[] = new byte[3];
 
@@ -33,7 +33,7 @@ public abstract class Sensor implements Identificable {
 
     }
 
-    protected Sensor(int uuid, SensorType type, String secret) {
+    protected Sensor(String uuid, SensorType type, String secret) {
         this.uuid = uuid;
         this.type = type;
         this.secret = secret;
@@ -60,7 +60,7 @@ public abstract class Sensor implements Identificable {
     }
 
     @Override
-    public int getIntUuid() {
+    public String getUuid() {
         return uuid;
     }
 
@@ -89,11 +89,11 @@ public abstract class Sensor implements Identificable {
     }
 
     public void setHub(Hub hub) {
-        this.hubID = hub.getIntUuid();
+        this.hubID = hub.getUuid();
         this.hub = hub;
     }
 
-    public void setUuid(int uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 

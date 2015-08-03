@@ -13,7 +13,7 @@ public class LightSensor extends Sensor {
     public LightSensor() {
         super();
     }
-    public LightSensor(int uuid, String secret) {
+    public LightSensor(String uuid, String secret) {
         super(uuid, SensorType.LIGHT, secret);
     }
 

@@ -15,7 +15,7 @@ public class BuiltInSensor extends Sensor {
     public BuiltInSensor() {
         super();
     }
-    public BuiltInSensor(int uuid, String secret) {
+    public BuiltInSensor(String uuid, String secret) {
         super(uuid, SensorType.BUILTIN, secret);
     }
 

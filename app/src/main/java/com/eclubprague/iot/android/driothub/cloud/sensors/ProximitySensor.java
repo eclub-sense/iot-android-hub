@@ -13,7 +13,7 @@ public class ProximitySensor extends Sensor {
     public ProximitySensor() {
         super();
     }
-    public ProximitySensor(int uuid, String secret) {
+    public ProximitySensor(String uuid, String secret) {
         super(uuid, SensorType.PROXIMITY, secret);
     }
 
