@@ -1,6 +1,7 @@
 package com.eclubprague.iot.android.driothub.tasks;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.eclubprague.iot.android.driothub.cloud.gsonmods.GsonCustomConverter;
 import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
@@ -56,9 +57,12 @@ public class HubRegisterTask extends AsyncTask<Hub, Void, HubRegisterTask.HubReg
             ClientResource cr = new ClientResource("http://192.168.201.222:8080/hub_registration");
             HubRegistrator rs = cr.wrap(HubRegistrator.class);
 
+            Log.e("HubRegistering:", hubs[0].toString());
+
             rs.store(hubs[0]);
         } catch(Throwable thr) {
             thr.printStackTrace();
+            Log.e("HubRegistering:", thr.toString());
         }
 
         return new HubRegisterResult(false, hubs[0]);

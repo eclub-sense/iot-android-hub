@@ -13,10 +13,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.eclubprague.iot.android.driothub.MainActivity;
+import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.tasks.UserRegisterTask;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Accelerometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.BuiltInSensor;
@@ -31,6 +33,14 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import org.eclipse.jetty.websocket.WebSocketClientFactory;
+import org.java_websocket.WebSocket;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.exceptions.InvalidDataException;
+import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.handshake.ServerHandshake;
+
+import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,8 +67,97 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     @Override
     public void handleUserRegistered(UserRegisterTask.UserRegisterResult result) {
-        Toast.makeText(this, "User registration done", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "User registration done", Toast.LENGTH_SHORT).show();
+        try{
+
+            //connectWebSocket(new Hub("2309", result.getUser()));
+            connectWebSocket(new Hub("2309", new User("User", "123")));
+            //Log.e("connecting ws: ", hubs[0].toString());
+
+        } catch(Exception e) {
+            Log.e("HubRegisterProxyTask:", e.toString());
+        }
+
+
     }
+
+    WebSocketClient mWebSocketClient;
+
+    private void connectWebSocket(final Hub hub) {
+        URI uri;
+        try {
+            uri = new URI("ws://192.168.201.222:8080/events");
+            //uri = new URI("ws://echo.websocket.org/");
+        } catch (Exception e) {
+            Log.e("URI:", e.toString());
+            return;
+        }
+
+        mWebSocketClient = new WebSocketClient(uri) {
+
+
+
+            @Override
+            public void onOpen(ServerHandshake serverHandshake) {
+                Log.e("onOpen:","wSocket opened");
+
+                try {
+                    Log.e("Sending:", hub.toString());
+                    send(hub.toString());
+                } catch(Exception e) {
+                    Log.e("Send:", e.toString());
+                }
+
+
+            }
+
+            @Override
+            public void onMessage(String s) {
+                final String message = s;
+                Log.e("onMessage:", message);
+            }
+
+            @Override
+            public void onClose(int i, String s, boolean b) {
+                Log.e("onClose:","Websocket Closed");
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("ERROR",e.toString());
+            }
+
+
+            @Override
+            public void connect() {
+                Log.e("CONNECT","Connecting");
+                super.connect();
+            }
+
+            @Override
+            public void run() {
+                super.run();
+            }
+
+//            @Override
+//            public void onWebsocketHandshakeSentAsClient(WebSocket conn, ClientHandshake request) throws InvalidDataException {
+//                super.onWebsocketHandshakeSentAsClient(conn, request);
+//            }
+//
+//            @Override
+//            public void onWebsocketHandshakeReceivedAsClient(WebSocket conn, ClientHandshake request, ServerHandshake response) throws InvalidDataException {
+//                super.onWebsocketHandshakeReceivedAsClient(conn, request, response);
+//            }
+        };
+
+        try {
+            mWebSocketClient.connect();
+        } catch(Exception e) {
+            Log.e("onConnect",e.toString());
+        }
+    }
+
+
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -86,7 +185,8 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 //        if(!sensorsCollectionsInitialized) {
 //            initBuiltInSensorsCollection();
 //        }
-        new UserRegisterTask(this).execute(new User("DAT", "999"));
+        //new UserRegisterTask(this).execute(new User("DAT", "999"));
+        connectWebSocket(new Hub("2309", new User("User","123")));
         mGoogleApiClient.connect();
         startTimer();
         return binder;
