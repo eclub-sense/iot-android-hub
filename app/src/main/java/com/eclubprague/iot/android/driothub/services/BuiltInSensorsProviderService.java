@@ -51,6 +51,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.tavendo.autobahn.WebSocketConnection;
+import de.tavendo.autobahn.WebSocketHandler;
+
 /**
  * Created by Dat on 28.7.2015.
  */
@@ -71,7 +74,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         try{
 
             //connectWebSocket(new Hub("2309", result.getUser()));
-            connectWebSocket(new Hub("2309", new User("User", "123")));
+            //connectWebSocket(new Hub("2309", new User("User", "123")));
             //Log.e("connecting ws: ", hubs[0].toString());
 
         } catch(Exception e) {
@@ -168,6 +171,37 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         }
     }
 
+    private WebSocketConnection mConnection;
+
+    private void connectWebSockett(final Hub hub) {
+        final String wsuri = "ws://192.168.201.222:8080/events";
+        mConnection = new WebSocketConnection();
+
+        try {
+            mConnection.connect(wsuri, new WebSocketHandler() {
+
+                @Override
+                public void onOpen() {
+                    Log.d("WonOpen", "Status: Connected to " + wsuri);
+                    mConnection.sendTextMessage(hub.toString());
+                }
+
+                @Override
+                public void onTextMessage(String payload) {
+                    Log.d("WonMessage", "Got echo: " + payload);
+                }
+
+                @Override
+                public void onClose(int code, String reason) {
+                    Log.d("WonClose", "Connection lost.");
+                }
+            });
+        } catch (Exception e) {
+
+            Log.d("WException", e.toString());
+        }
+    }
+
 
 
     /**
@@ -197,7 +231,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 //            initBuiltInSensorsCollection();
 //        }
         //new UserRegisterTask(this).execute(new User("DAT", "999"));
-        connectWebSocket(new Hub("2309", new User("User","123")));
+        connectWebSockett(new Hub("2309", new User("User","123")));
         mGoogleApiClient.connect();
         startTimer();
         return binder;
