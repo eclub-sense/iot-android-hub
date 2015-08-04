@@ -136,18 +136,29 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
             @Override
             public void run() {
+                Log.e("RUN","run");
                 super.run();
             }
 
-//            @Override
-//            public void onWebsocketHandshakeSentAsClient(WebSocket conn, ClientHandshake request) throws InvalidDataException {
-//                super.onWebsocketHandshakeSentAsClient(conn, request);
-//            }
-//
-//            @Override
-//            public void onWebsocketHandshakeReceivedAsClient(WebSocket conn, ClientHandshake request, ServerHandshake response) throws InvalidDataException {
-//                super.onWebsocketHandshakeReceivedAsClient(conn, request, response);
-//            }
+            @Override
+            public void onWebsocketHandshakeSentAsClient(WebSocket conn, ClientHandshake request) throws InvalidDataException {
+                Log.e("WS","onWebsocketHandshakeSentAsClient");
+                try {
+                    super.onWebsocketHandshakeSentAsClient(conn, request);
+                } catch(Exception e) {
+                    Log.e("WSE",e.toString());
+                }
+            }
+
+            @Override
+            public void onWebsocketHandshakeReceivedAsClient(WebSocket conn, ClientHandshake request, ServerHandshake response) throws InvalidDataException {
+                Log.e("WS", "onWebsocketHandshakeReceivedAsClient");
+                try {
+                    super.onWebsocketHandshakeSentAsClient(conn, request);
+                } catch(Exception e) {
+                    Log.e("WSE",e.toString());
+                }
+            }
         };
 
         try {
@@ -229,6 +240,11 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         stopLocationUpdates();
         mSensorManager.unregisterListener(this);
         stoptimertask();
+        try{
+            mWebSocketClient.close();
+        } catch (Exception e) {
+            Log.e("CLOSED:", "Already closed");
+        }
         return super.onUnbind(intent);
     }
 
