@@ -8,8 +8,6 @@ import com.eclubprague.iot.android.driothub.cloud.gsonmods.GsonCustomConverter;
 import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.cloud.user.User;
 
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
 import org.restlet.engine.Engine;
 import org.restlet.resource.ClientResource;
 

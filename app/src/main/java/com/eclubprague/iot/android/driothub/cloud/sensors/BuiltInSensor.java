@@ -1,6 +1,7 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
-import com.google.gson.annotations.Expose;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,5 +48,11 @@ public class BuiltInSensor extends Sensor {
         return "BuiltIn";
         /*return "GPS [latitude=" + latitude + ", longitude=" + longitude + ", uuid=" + uuid + ", type="
                 + type + ", secret=" + secret + "]";*/
+    }
+
+    @Override
+    public List<DataNameValuePair> getDataList() {
+        super.data.clear();
+        return super.data;
     }
 }

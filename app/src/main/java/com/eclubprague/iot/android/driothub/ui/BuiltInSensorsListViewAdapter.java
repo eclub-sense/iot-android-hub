@@ -30,7 +30,7 @@ public class BuiltInSensorsListViewAdapter extends ArrayAdapter<Sensor> {
 
         Sensor s = getItem(position);
         TextView textView = (TextView) convertView.findViewById(R.id.firstLine_pure);
-        textView.setText(s.getType().getName());
+        textView.setText(Integer.toString(s.getType()));
         TextView textView2 = (TextView) convertView.findViewById(R.id.secondLine_pure);
         textView2.setText(s.printData());
 

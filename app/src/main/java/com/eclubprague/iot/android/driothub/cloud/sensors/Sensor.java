@@ -1,7 +1,11 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -16,24 +20,28 @@ import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
  */
 public abstract class Sensor implements Identificable {
 
-    @Expose @SerializedName("@type") private String jsonType = "sensor";
+    /*@Expose @SerializedName("@type")*/ private transient String jsonType = "sensor";
     @Expose protected String uuid;
-    @Expose protected SensorType type = SensorType.THERMOMETER;
-    @Expose (serialize = false) protected String secret;
-    protected int incr;
-    @Expose (deserialize = false) protected int battery;
-    @Expose (deserialize = false) protected String hubID;
-    protected Hub hub;
-    protected byte reserved[] = new byte[3];
+    //@Expose protected SensorType type = SensorType.THERMOMETER;
+    /*@Expose (serialize = false)*/ protected transient String secret;
+    @Expose protected int type = 1;
+    protected transient int incr;
+    /*@Expose (deserialize = false) protected int battery;
+    @Expose (deserialize = false) protected String hubID;*/
+    protected transient Hub hub;
+    protected transient byte reserved[] = new byte[3];
+
+    protected transient List<DataNameValuePair> data = new ArrayList<>();
 
     public abstract void readPayload(byte[] data);
     public abstract String printData();
+    public abstract List<DataNameValuePair> getDataList();
 
     protected Sensor() {
 
     }
 
-    protected Sensor(String uuid, SensorType type, String secret) {
+    protected Sensor(String uuid, int type, String secret) {
         this.uuid = uuid;
         this.type = type;
         this.secret = secret;
@@ -42,7 +50,7 @@ public abstract class Sensor implements Identificable {
     public void readPacket(String p) throws DecoderException {
         byte[] packet = decrypt(p);
         incr = (int)(packet[0]);
-        battery = (int)(packet[2]);
+        //battery = (int)(packet[2]);
         reserved[0] = packet[3];
         reserved[1] = packet[4];
         reserved[2] = packet[5];
@@ -64,11 +72,11 @@ public abstract class Sensor implements Identificable {
         return uuid;
     }
 
-    public String getStringUuid() {
+    /*public String getStringUuid() {
         return String.format("%08d", uuid);
-    }
+    }*/
 
-    public SensorType getType() {
+    public int getType() {
         return type;
     }
 
@@ -80,16 +88,16 @@ public abstract class Sensor implements Identificable {
         return incr;
     }
 
-    public int getBattery() {
+    /*public int getBattery() {
         return battery;
-    }
+    }*/
 
     public Hub getHub() {
         return hub;
     }
 
     public void setHub(Hub hub) {
-        this.hubID = hub.getUuid();
+        //this.hubID = hub.getUuid();
         this.hub = hub;
     }
 
@@ -99,7 +107,9 @@ public abstract class Sensor implements Identificable {
 
     @Override
     public String toString() {
-        return "Sensor [jsonType=" + jsonType + ", uuid=" + uuid + ", type=" + type + ", secret=" + secret + "]";
+        //return "Sensor [jsonType=" + jsonType + ", uuid=" + uuid + ", type=" + type + ", secret=" + secret + "]";
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }
 

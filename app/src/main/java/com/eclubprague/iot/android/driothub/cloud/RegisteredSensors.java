@@ -1,7 +1,7 @@
 package com.eclubprague.iot.android.driothub.cloud;
 
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
-import com.eclubprague.iot.android.driothub.cloud.sensors.SensorPaginatedCollection;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorPaginatedCollection;
 
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;

@@ -1,7 +1,7 @@
 package com.eclubprague.iot.android.driothub.cloud.gsonmods;
 
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
-import com.eclubprague.iot.android.driothub.cloud.sensors.SensorDeserializer;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorDeserializer;
 import com.google.gson.GsonBuilder;
 
 import org.restlet.ext.gson.GsonRepresentation;

@@ -1,0 +1,44 @@
+package com.eclubprague.iot.android.driothub.cloud.sensors.supports;
+
+import com.eclubprague.iot.android.driothub.cloud.sensors.Accelerometer;
+import com.eclubprague.iot.android.driothub.cloud.sensors.ESCLed;
+import com.eclubprague.iot.android.driothub.cloud.sensors.ESCThermometer;
+import com.eclubprague.iot.android.driothub.cloud.sensors.GPS;
+import com.eclubprague.iot.android.driothub.cloud.sensors.LightSensor;
+import com.eclubprague.iot.android.driothub.cloud.sensors.ProximitySensor;
+import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
+import java.lang.reflect.Type;
+
+/**
+ * Created by Dat on 28.7.2015.
+ */
+public class SensorDeserializer implements JsonDeserializer<Sensor> {
+    @Override
+    public Sensor deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        JsonObject jo = json.getAsJsonObject();
+        int sensorType = jo.get("type").getAsInt();
+
+        switch(sensorType) {
+            case SensorType.THERMOMETER:
+                return context.deserialize(json, ESCThermometer.class);
+            case SensorType.LED:
+                return context.deserialize(json, ESCLed.class);
+            case SensorType.GPS:
+                return context.deserialize(json, GPS.class);
+            case SensorType.ACCELEROMETER:
+                return context.deserialize(json, Accelerometer.class);
+            case SensorType.LIGHT:
+                return context.deserialize(json, LightSensor.class);
+            case SensorType.PROXIMITY:
+                return context.deserialize(json, ProximitySensor.class);
+            default:
+                throw new JsonParseException("We can't deserialize this type of Sensor.");
+        }
+    }
+}

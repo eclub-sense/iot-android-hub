@@ -1,6 +1,10 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.annotations.Expose;
+
+import java.util.List;
 
 /**
  * Created by Dat on 28.7.2015.
@@ -40,5 +44,13 @@ public class ESCThermometer extends Sensor {
     public String toString() {
         return "ESCThermometer [temperature=" + temperature + ", pressure=" + pressure + ", uuid=" + uuid + ", type="
                 + type + ", secret=" + secret + "]";
+    }
+
+    @Override
+    public List<DataNameValuePair> getDataList() {
+        data.clear();
+        data.add(new DataNameValuePair("temperature", Integer.toString(temperature)));
+        data.add(new DataNameValuePair("pressure", Integer.toString(pressure)));
+        return data;
     }
 }

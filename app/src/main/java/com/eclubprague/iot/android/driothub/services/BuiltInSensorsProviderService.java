@@ -19,7 +19,10 @@ import android.widget.Toast;
 
 import com.eclubprague.iot.android.driothub.MainActivity;
 import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorDataWrapper;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.WSDataWrapper;
 import com.eclubprague.iot.android.driothub.tasks.UserRegisterTask;
+import com.eclubprague.iot.android.driothub.tasks.UserRegisterTask.UserRegisterCallbacks;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Accelerometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.BuiltInSensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.GPS;
@@ -32,13 +35,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-
-import org.eclipse.jetty.websocket.WebSocketClientFactory;
-import org.java_websocket.WebSocket;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.exceptions.InvalidDataException;
-import org.java_websocket.handshake.ClientHandshake;
-import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
 import java.text.DateFormat;
@@ -60,6 +56,8 @@ import de.tavendo.autobahn.WebSocketHandler;
 public class BuiltInSensorsProviderService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener, SensorEventListener,
         UserRegisterTask.UserRegisterCallbacks {
+
+    private final String UUID = "2309";
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -84,96 +82,9 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     }
 
-    WebSocketClient mWebSocketClient;
-
-    private void connectWebSocket(final Hub hub) {
-        URI uri;
-        try {
-            uri = new URI("ws://192.168.201.222:8080/events");
-            //uri = new URI("ws://echo.websocket.org/");
-        } catch (Exception e) {
-            Log.e("URI:", e.toString());
-            return;
-        }
-
-        mWebSocketClient = new WebSocketClient(uri) {
-
-
-
-            @Override
-            public void onOpen(ServerHandshake serverHandshake) {
-                Log.e("onOpen:","wSocket opened");
-
-                try {
-                    Log.e("Sending:", hub.toString());
-                    send(hub.toString());
-                } catch(Exception e) {
-                    Log.e("Send:", e.toString());
-                }
-
-
-            }
-
-            @Override
-            public void onMessage(String s) {
-                final String message = s;
-                Log.e("onMessage:", message);
-            }
-
-            @Override
-            public void onClose(int i, String s, boolean b) {
-                Log.e("onClose:","Websocket Closed");
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e("ERROR",e.toString());
-            }
-
-
-            @Override
-            public void connect() {
-                Log.e("CONNECT","Connecting");
-                super.connect();
-            }
-
-            @Override
-            public void run() {
-                Log.e("RUN","run");
-                super.run();
-            }
-
-            @Override
-            public void onWebsocketHandshakeSentAsClient(WebSocket conn, ClientHandshake request) throws InvalidDataException {
-                Log.e("WS","onWebsocketHandshakeSentAsClient");
-                try {
-                    super.onWebsocketHandshakeSentAsClient(conn, request);
-                } catch(Exception e) {
-                    Log.e("WSE",e.toString());
-                }
-            }
-
-            @Override
-            public void onWebsocketHandshakeReceivedAsClient(WebSocket conn, ClientHandshake request, ServerHandshake response) throws InvalidDataException {
-                Log.e("WS", "onWebsocketHandshakeReceivedAsClient");
-                try {
-                    super.onWebsocketHandshakeSentAsClient(conn, request);
-                } catch(Exception e) {
-                    Log.e("WSE",e.toString());
-                }
-            }
-        };
-
-        try {
-            mWebSocketClient.connect();
-        } catch(Exception e) {
-            Log.e("onConnect",e.toString());
-        }
-    }
-
     private WebSocketConnection mConnection;
 
-    private void connectWebSockett(final Hub hub) {
+    private void connectWebSocket(final Hub hub) {
         final String wsuri = "ws://192.168.201.222:8080/events";
         mConnection = new WebSocketConnection();
 
@@ -231,7 +142,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 //            initBuiltInSensorsCollection();
 //        }
         //new UserRegisterTask(this).execute(new User("DAT", "999"));
-        connectWebSockett(new Hub("2309", new User("User","123")));
+        connectWebSocket(new Hub(UUID, new User("User", "123")));
         mGoogleApiClient.connect();
         startTimer();
         return binder;
@@ -275,7 +186,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         mSensorManager.unregisterListener(this);
         stoptimertask();
         try{
-            mWebSocketClient.close();
+            //mWebSocketClient.close();
         } catch (Exception e) {
             Log.e("CLOSED:", "Already closed");
         }
@@ -387,11 +298,11 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                 );
                 break;
             default:
-                List<Float> data = new ArrayList<>();
+                /*List<Float> data = new ArrayList<>();
                 for(int i = 0; i < event.values.length; i++) {
                     data.add(event.values[i]);
                 }
-                ( (BuiltInSensor)(builtInSensors.get(event.sensor.getName())) ).setData(data);
+                ( (BuiltInSensor)(builtInSensors.get(event.sensor.getName())) ).setData(data);*/
         }
     }
 
@@ -408,6 +319,8 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     private HashMap<String, Sensor> builtInSensors = new HashMap<>();
 
+    private List<Sensor> simpleBuiltInSensorsList = new ArrayList<>();
+
     private String gpsKey = "GPS_phamtdat";
 
     private boolean sensorsCollectionsInitialized = false;
@@ -420,26 +333,26 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         mSensorManager = (SensorManager) context.getSystemService(context.SENSOR_SERVICE);
         deviceSensors = mSensorManager.getSensorList(android.hardware.Sensor.TYPE_ALL);
 
-        builtInSensors.put(gpsKey, new GPS("12346", "gps_secret"));
+        builtInSensors.put(gpsKey, new GPS(UUID, "gps_secret"));
 
         for(int i = 0; i < deviceSensors.size(); i++) {
             android.hardware.Sensor sensor = deviceSensors.get(i);
             switch(sensor.getType()) {
                 case android.hardware.Sensor.TYPE_ACCELEROMETER:
                     builtInSensors.put(sensor.getName(),
-                            new Accelerometer(Integer.toString(i), sensor.getName()));
+                            new Accelerometer(UUID, sensor.getName()));
                     break;
                 case android.hardware.Sensor.TYPE_LIGHT:
                     builtInSensors.put(sensor.getName(),
-                            new LightSensor(Integer.toString(i), sensor.getName()));
+                            new LightSensor(UUID, sensor.getName()));
                     break;
                 case android.hardware.Sensor.TYPE_PROXIMITY:
                     builtInSensors.put(sensor.getName(),
-                            new ProximitySensor(Integer.toString(i), sensor.getName()));
+                            new ProximitySensor(UUID, sensor.getName()));
                     break;
                 default:
-                builtInSensors.put(sensor.getName(),
-                        new BuiltInSensor(Integer.toString(i), sensor.getName()));
+                /*builtInSensors.put(sensor.getName(),
+                        new BuiltInSensor(UUID, sensor.getName()));*/
             }
             mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
         }
@@ -457,8 +370,11 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         List<Sensor> sensors = new ArrayList<>();
         sensors.add(builtInSensors.get(gpsKey));
         for(int i = 0; i < deviceSensors.size(); i++) {
-            sensors.add(builtInSensors.get(
-                    deviceSensors.get(i).getName()  ) );
+            if(builtInSensors.get(
+                    deviceSensors.get(i).getName() ) != null) {
+                sensors.add(builtInSensors.get(
+                        deviceSensors.get(i).getName()));
+            }
         }
         return sensors;
     }
@@ -495,6 +411,23 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                 handler.post(new Runnable() {
                     public void run() {
                         BuiltInSensorsProviderService.this.activityList.get(0).actualizeListView(getBuiltInSensors());
+
+                        if(mConnection.isConnected()) {
+
+                            List<Sensor> builtins = getBuiltInSensors();
+                            WSDataWrapper data = new WSDataWrapper();
+
+                            for(int i = 0; i < builtins.size(); i++) {
+                                //Log.e("SENSOR_" + i, builtins.get(i).toString());
+                                data.addSensorData(new SensorDataWrapper(
+                                        builtins.get(i)
+                                ));
+                            }
+
+                            Log.e("WSDATA", data.toString());
+
+                            mConnection.sendTextMessage(data.toString());
+                        }
                     }
                 });
             }

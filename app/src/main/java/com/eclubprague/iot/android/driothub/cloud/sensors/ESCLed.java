@@ -1,8 +1,12 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.Switch;
 import com.google.gson.annotations.Expose;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Dat on 28.7.2015.
@@ -51,7 +55,13 @@ public class ESCLed extends Sensor implements WriteableSensor {
     @Override
     public String toString() {
         return "ESCLed [led=" + led + ", uuid=" + uuid + ", type=" + type + ", secret=" + secret + ", incr=" + incr
-                + ", battery=" + battery + ", hubID=" + hubID + ", hub=" + hub + ", reserved="
+                + /*", battery=" + battery + ", hubID=" + hubID +*/ ", hub=" + hub + ", reserved="
                 + Arrays.toString(reserved) + "]";
+    }
+
+    @Override
+    public List<DataNameValuePair> getDataList() {
+        data.clear();
+        return data;
     }
 }

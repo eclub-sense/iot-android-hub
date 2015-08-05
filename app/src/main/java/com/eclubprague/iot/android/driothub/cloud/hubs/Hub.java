@@ -23,7 +23,7 @@ public class Hub implements Identificable {
     @Expose (deserialize = false) protected String type = "LOGIN";
 
 
-    @Expose (serialize = false) private User user;
+    private transient User user;
 
     public Hub(String uuid, User user) {
         this.uuid = uuid;

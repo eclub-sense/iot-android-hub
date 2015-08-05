@@ -1,6 +1,10 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.annotations.Expose;
+
+import java.util.List;
 
 /**
  * Created by Dat on 28.7.2015.
@@ -55,5 +59,14 @@ public class Accelerometer extends Sensor {
     public String toString() {
         return "Accelerometer [x = " + x + ", y = " + y + ", z = " + z + "(m/s^2)" + ", uuid=" + uuid + ", type="
                 + type + ", secret=" + secret + "]";
+    }
+
+    @Override
+    public List<DataNameValuePair> getDataList() {
+        data.clear();
+        data.add(new DataNameValuePair("x", Double.toString(x)));
+        data.add(new DataNameValuePair("y", Double.toString(y)));
+        data.add(new DataNameValuePair("z", Double.toString(z)));
+        return data;
     }
 }

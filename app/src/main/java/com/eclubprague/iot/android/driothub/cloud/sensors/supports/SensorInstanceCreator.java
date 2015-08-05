@@ -1,5 +1,9 @@
-package com.eclubprague.iot.android.driothub.cloud.sensors;
+package com.eclubprague.iot.android.driothub.cloud.sensors.supports;
 
+import com.eclubprague.iot.android.driothub.cloud.sensors.ESCLed;
+import com.eclubprague.iot.android.driothub.cloud.sensors.ESCThermometer;
+import com.eclubprague.iot.android.driothub.cloud.sensors.GPS;
+import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -21,12 +25,12 @@ public class SensorInstanceCreator {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        switch ((String)type) {
-            case "THERMOMETER" :
+        switch ((int)type) {
+            case SensorType.THERMOMETER :
                 return gson.fromJson(json, ESCThermometer.class);
-            case "LED" :
+            case SensorType.LED :
                 return gson.fromJson(json, ESCLed.class);
-            case "GPS" :
+            case SensorType.GPS :
                 return gson.fromJson(json, GPS.class);
             default :
                 return null;
