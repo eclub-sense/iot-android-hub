@@ -359,8 +359,8 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     private final String USERNAME = "User";
     private final String PSSWD = "123";
     private final User USER = new User(USERNAME,PSSWD);
-    //private final String WSURI = "ws://192.168.201.222:8080/events";
-    private final String WSURI = "ws://echo.websocket.org";
+    private final String WSURI = "ws://192.168.201.222:8080/events";
+    //private final String WSURI = "ws://echo.websocket.org";
     private final Hub THISHUB = new Hub(UUID, USER);
 
 //    @Override
