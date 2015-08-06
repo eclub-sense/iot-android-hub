@@ -25,7 +25,6 @@ import com.eclubprague.iot.android.driothub.cloud.sensors.HumiditySensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.LinearAccelerometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Magnetometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.RotationSensor;
-import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorDataWrapper;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.WSDataWrapper;
 //import com.eclubprague.iot.android.driothub.tasks.UserRegisterTask.UserRegisterCallbacks;
@@ -42,6 +41,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +62,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     //UI fields, only for testing and debugging purposes
     private Context context;
-    private List<MainActivity> activityList = new ArrayList<>();
+    private WeakReference<MainActivity> activityRef;
 
     //----------------------------------------------------------------
     // SERVICE OVERRIDE METHODS AND BINDER
@@ -103,7 +103,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     public boolean onUnbind(Intent intent) {
         stopLocationUpdates();
         mSensorManager.unregisterListener(this);
-        stoptimertask();
+        stopTimerTask();
         mConnection.disconnect();
         return super.onUnbind(intent);
     }
@@ -253,9 +253,9 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     //private boolean sensorsCollectionsInitialized = false;
 
-    public void initBuiltInSensorsCollection(List<MainActivity> activityList) {
-        this.activityList = activityList;
-        context = activityList.get(0);
+    public void initBuiltInSensorsCollection(MainActivity activity) {
+        this.activityRef = new WeakReference<MainActivity>(activity);
+        context = activity;
         if(context == null) return;
         //sensorsCollectionsInitialized = true;
         mSensorManager = (SensorManager) context.getSystemService(context.SENSOR_SERVICE);
@@ -446,7 +446,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         timer.schedule(timerTask, 5000, 10000); //
     }
 
-    public void stoptimertask() {
+    public void stopTimerTask() {
         if (timer != null) {
             timer.cancel();
             timer = null;
@@ -460,7 +460,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                 handler.post(new Runnable() {
                     public void run() {
                         //update UI, will be removed in the end
-                        BuiltInSensorsProviderService.this.activityList.get(0).actualizeListView(getBuiltInSensors());
+                        BuiltInSensorsProviderService.this.activityRef.get().actualizeListView(getBuiltInSensors());
 
                         //send updated data
                         if(mConnection.isConnected()) {

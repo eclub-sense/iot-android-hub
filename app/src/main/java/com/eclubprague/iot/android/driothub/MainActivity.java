@@ -47,9 +47,7 @@ public class MainActivity extends ActionBarActivity {
             * run of the Service, they serve only for testing purposes and will be removed
             * in the end.
             */
-            List<MainActivity> activityList = new ArrayList<>();
-            activityList.add(MainActivity.this);
-            binder.getService().initBuiltInSensorsCollection(activityList);
+            binder.getService().initBuiltInSensorsCollection(MainActivity.this);
 
             //set Service bounded to true
             bound = true;

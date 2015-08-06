@@ -11,12 +11,9 @@ import java.util.List;
  */
 public class AmbientThermometer extends Sensor {
 
-    protected String unit = "°C";
+    protected String unit = "\u00B0" + "C";
     protected float temperature = 0;
 
-    public AmbientThermometer() {
-        super();
-    }
     public AmbientThermometer(String uuid, String secret) {
         super(uuid, SensorType.AMBIENT_THERMOMETER, secret);
     }
@@ -28,7 +25,7 @@ public class AmbientThermometer extends Sensor {
 
     @Override
     public String printData() {
-        return ("temperature = " + temperature + " °C");
+        return ("temperature = " + temperature + " " + unit);
     }
 
     public float getTemperature() {
