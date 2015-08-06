@@ -41,8 +41,7 @@ public class Barometer extends Sensor {
 
     @Override
     public String toString() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
+        return new Gson().toJson(this);
     }
 
     @Override

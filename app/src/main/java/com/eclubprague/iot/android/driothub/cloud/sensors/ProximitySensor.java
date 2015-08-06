@@ -3,7 +3,6 @@ package com.eclubprague.iot.android.driothub.cloud.sensors;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.Gson;
-import com.google.gson.annotations.Expose;
 
 import java.util.List;
 
@@ -12,8 +11,8 @@ import java.util.List;
  */
 public class ProximitySensor extends Sensor {
 
-    @Expose(deserialize = false) protected String unit = "cm";
-    @Expose(deserialize = false) protected float proximity = 0;
+    protected String unit = "cm";
+    protected float proximity = 0;
 
     public ProximitySensor() {
         super();
@@ -43,8 +42,7 @@ public class ProximitySensor extends Sensor {
 
     @Override
     public String toString() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
+        return new Gson().toJson(this);
     }
 
     @Override

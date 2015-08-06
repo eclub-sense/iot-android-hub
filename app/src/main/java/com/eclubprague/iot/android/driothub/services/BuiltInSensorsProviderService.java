@@ -27,7 +27,6 @@ import com.eclubprague.iot.android.driothub.cloud.sensors.Magnetometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.RotationSensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.WSDataWrapper;
-//import com.eclubprague.iot.android.driothub.tasks.UserRegisterTask.UserRegisterCallbacks;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Accelerometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.GPS;
 import com.eclubprague.iot.android.driothub.cloud.sensors.LightSensor;
@@ -247,17 +246,12 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     private HashMap<String, Sensor> builtInSensors = new HashMap<>();
 
-    //private List<Sensor> simpleBuiltInSensorsList = new ArrayList<>();
-
     private String gpsKey = "GPS_phamtdat";
 
-    //private boolean sensorsCollectionsInitialized = false;
-
     public void initBuiltInSensorsCollection(MainActivity activity) {
-        this.activityRef = new WeakReference<MainActivity>(activity);
+        this.activityRef = new WeakReference<>(activity);
         context = activity;
         if(context == null) return;
-        //sensorsCollectionsInitialized = true;
         mSensorManager = (SensorManager) context.getSystemService(context.SENSOR_SERVICE);
         deviceSensors = mSensorManager.getSensorList(android.hardware.Sensor.TYPE_ALL);
 
@@ -322,8 +316,6 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                     mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                     break;
                 default:
-                /*builtInSensors.put(sensor.getName(),
-                        new BuiltInSensor(UUID, sensor.getName()));*/
             }
         }
     }
@@ -350,7 +342,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     }
 
     //----------------------------------------------------------------
-    // COMMUNICATION WITH CLOUD-SIDE
+    // WEBSOCKET COMMUNICATION WITH CLOUD-SIDE
     //----------------------------------------------------------------
 
     /*

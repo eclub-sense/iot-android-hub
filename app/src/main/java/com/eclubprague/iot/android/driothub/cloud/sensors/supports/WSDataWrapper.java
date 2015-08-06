@@ -2,7 +2,6 @@ package com.eclubprague.iot.android.driothub.cloud.sensors.supports;
 
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
 import com.google.gson.Gson;
-import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,6 @@ public class WSDataWrapper {
 
     @Override
     public String toString() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
+        return new Gson().toJson(this);
     }
 }

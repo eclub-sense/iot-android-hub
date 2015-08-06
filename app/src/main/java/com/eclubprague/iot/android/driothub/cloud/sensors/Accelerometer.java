@@ -3,7 +3,6 @@ package com.eclubprague.iot.android.driothub.cloud.sensors;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.Gson;
-import com.google.gson.annotations.Expose;
 
 import java.util.List;
 
@@ -12,10 +11,10 @@ import java.util.List;
  */
 public class Accelerometer extends Sensor {
 
-    @Expose(deserialize = false) protected String unit = "m/s^2";
-    @Expose(deserialize = false) protected float x = 0;
-    @Expose(deserialize = false) protected float y = 0;
-    @Expose(deserialize = false) protected float z = 0;
+    protected String unit = "m/s^2";
+    protected float x = 0;
+    protected float y = 0;
+    protected float z = 0;
 
     public Accelerometer() {
         super();
@@ -59,8 +58,7 @@ public class Accelerometer extends Sensor {
 
     @Override
     public String toString() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
+        return new Gson().toJson(this);
     }
 
     @Override

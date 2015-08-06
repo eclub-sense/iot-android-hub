@@ -1,7 +1,5 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
-import android.hardware.SensorEvent;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,8 +7,6 @@ import java.util.List;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.Gson;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -23,11 +19,9 @@ import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
  */
 public abstract class Sensor implements Identificable {
 
-    /*@Expose @SerializedName("@type")*/ private transient String jsonType = "sensor";
-    @Expose protected String uuid;
-    //@Expose protected SensorType type = SensorType.THERMOMETER;
-    /*@Expose (serialize = false)*/ protected transient String secret;
-    @Expose protected int type = 1;
+    protected String uuid;
+    protected transient String secret;
+    protected int type = SensorType.THERMOMETER;
     protected String s_type = "sensor";
     protected transient int incr;
     /*@Expose (deserialize = false) protected int battery;
@@ -103,7 +97,6 @@ public abstract class Sensor implements Identificable {
     }
 
     public void setHub(Hub hub) {
-        //this.hubID = hub.getUuid();
         this.hub = hub;
     }
 
@@ -113,9 +106,7 @@ public abstract class Sensor implements Identificable {
 
     @Override
     public String toString() {
-        //return "Sensor [jsonType=" + jsonType + ", uuid=" + uuid + ", type=" + type + ", secret=" + secret + "]";
-        Gson gson = new Gson();
-        return gson.toJson(this);
+        return new Gson().toJson(this);
     }
 }
 

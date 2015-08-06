@@ -38,8 +38,7 @@ public class AmbientThermometer extends Sensor {
 
     @Override
     public String toString() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
+        return new Gson().toJson(this);
     }
 
     @Override

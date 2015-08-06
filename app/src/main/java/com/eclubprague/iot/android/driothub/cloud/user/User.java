@@ -1,13 +1,13 @@
 package com.eclubprague.iot.android.driothub.cloud.user;
 
-import com.google.gson.annotations.Expose;
+import com.google.gson.Gson;
 
 /**
  * Created by Dat on 3.8.2015.
  */
 public class User {
-    @Expose(deserialize = false) protected String username;
-    @Expose (deserialize = false) protected String password;
+    protected String username;
+    protected String password;
 
     public User(String username, String password) {
         this.username = username;
@@ -20,6 +20,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User [username=" + username + ", password=" + password + "]";
+        return new Gson().toJson(this);
     }
 }
