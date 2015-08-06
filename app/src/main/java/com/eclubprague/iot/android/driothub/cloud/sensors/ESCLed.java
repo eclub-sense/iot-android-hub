@@ -64,4 +64,8 @@ public class ESCLed extends Sensor implements WriteableSensor {
         data.clear();
         return data;
     }
+
+    @Override
+    public void setData(float[] values) {
+    }
 }

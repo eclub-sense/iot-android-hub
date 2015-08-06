@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.eclubprague.iot.android.driothub.R;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class BuiltInSensorsListViewAdapter extends ArrayAdapter<Sensor> {
 
         Sensor s = getItem(position);
         TextView textView = (TextView) convertView.findViewById(R.id.firstLine_pure);
-        textView.setText(Integer.toString(s.getType()));
+        textView.setText(SensorType.getStringSensorType(s.getType()));
         TextView textView2 = (TextView) convertView.findViewById(R.id.secondLine_pure);
         textView2.setText(s.printData());
 

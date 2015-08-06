@@ -1,5 +1,6 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors.supports;
 
+import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
@@ -11,16 +12,20 @@ import java.util.List;
  */
 public class WSDataWrapper {
 
-    @Expose
+
     private String type = "DATA";
-    @Expose
+
     private List<SensorDataWrapper> data = new ArrayList<>();
 
-    public WSDataWrapper() {
-    }
+    private transient List<Sensor> sensors;
 
-    public void addSensorData(SensorDataWrapper sensorDataWrapper) {
-        data.add(sensorDataWrapper);
+    public WSDataWrapper(List<Sensor> sensors) {
+        this.sensors = sensors;
+        for(int i = 0; i < sensors.size(); i++) {
+            data.add(new SensorDataWrapper(
+                    sensors.get(i)
+            ));
+        }
     }
 
     @Override

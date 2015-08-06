@@ -2,6 +2,7 @@ package com.eclubprague.iot.android.driothub.cloud.sensors;
 
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 public class LightSensor extends Sensor {
 
     @Expose(deserialize = false) protected String unit = "lx";
-    @Expose(deserialize = false) protected double illumination = 0;
+    @Expose(deserialize = false) protected float illumination = 0;
 
     public LightSensor() {
         super();
@@ -31,7 +32,7 @@ public class LightSensor extends Sensor {
         return ("illumination = " + illumination + " lx");
     }
 
-    public double getIllumination() {
+    public float getIllumination() {
         return illumination;
     }
 
@@ -39,20 +40,21 @@ public class LightSensor extends Sensor {
         return unit;
     }
 
-    public void setData(double illumination) {
-        this.illumination = illumination;
-    }
-
     @Override
     public String toString() {
-        return "Light_sensor [illumination = " + illumination + " lx" + ", uuid=" + uuid + ", type="
-                + type + ", secret=" + secret + "]";
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 
     @Override
     public List<DataNameValuePair> getDataList() {
         data.clear();
-        data.add(new DataNameValuePair("illumination", Double.toString(illumination)));
+        data.add(new DataNameValuePair("illumination", Float.toString(illumination)));
         return data;
+    }
+
+    @Override
+    public void setData(float[] values) {
+        illumination = values[0];
     }
 }

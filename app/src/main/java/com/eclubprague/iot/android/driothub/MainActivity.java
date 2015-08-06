@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
 import com.eclubprague.iot.android.driothub.services.BuiltInSensorsProviderService;
-import com.eclubprague.iot.android.driothub.services.LocationListenerService;
 import com.eclubprague.iot.android.driothub.ui.BuiltInSensorsListViewAdapter;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -20,10 +19,15 @@ import com.google.android.gms.location.LocationServices;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/*
+* UI class that shows data received from BuiltInSensorsProviderService
+* The UI exists only for testing and debugging purposes and will be removed in the end
+*/
+
 public class MainActivity extends ActionBarActivity {
 
     private boolean bound = false;
-    //private LocationListenerService locationListenerService;
 
     private BuiltInSensorsProviderService builtInSensorsProviderService;
 
@@ -33,17 +37,21 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            // We've bound to Service, cast the IBinder and get Service instance
             BuiltInSensorsProviderService.BuiltInSensorsProviderBinder binder =
                     (BuiltInSensorsProviderService.BuiltInSensorsProviderBinder) service;
+
+            /*
+            * Pass this MainActivity instance to Service as reference so that the Service
+            * can update the UI. This part of code, including UI, is not crucial for the
+            * run of the Service, they serve only for testing purposes and will be removed
+            * in the end.
+            */
             List<MainActivity> activityList = new ArrayList<>();
             activityList.add(MainActivity.this);
-            //binder.setServiceActivity(activityList);
-            /*builtInSensorsProviderService = */binder.getService().initBuiltInSensorsCollection(activityList);
-//            binder.setServiceContext(MainActivity.this);
-//            List<MainActivity> activityList = new ArrayList<>();
-//            activityList.add(MainActivity.this);
-//            binder.setServiceActivity(activityList);
+            binder.getService().initBuiltInSensorsCollection(activityList);
+
+            //set Service bounded to true
             bound = true;
         }
 
@@ -65,16 +73,15 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Bind to LocalService
+        // Bind to the Service
         Intent intent = new Intent(this, BuiltInSensorsProviderService.class);
-        //startService(intent);
         bindService(intent, connection, android.content.Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        // Unbind from the service
+        // Unbind from the Service
         if (bound) {
             unbindService(connection);
             bound = false;
@@ -108,6 +115,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     //-------------------------------------------------
+    // UI elements, will be removed in the end
     //-------------------------------------------------
 
     static ListView listView;

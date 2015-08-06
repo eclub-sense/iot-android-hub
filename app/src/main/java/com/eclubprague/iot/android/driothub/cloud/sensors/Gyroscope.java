@@ -3,25 +3,24 @@ package com.eclubprague.iot.android.driothub.cloud.sensors;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.Gson;
-import com.google.gson.annotations.Expose;
 
 import java.util.List;
 
 /**
- * Created by Dat on 28.7.2015.
+ * Created by Dat on 6.8.2015.
  */
-public class Accelerometer extends Sensor {
+public class Gyroscope extends Sensor {
 
-    @Expose(deserialize = false) protected String unit = "m/s^2";
-    @Expose(deserialize = false) protected float x = 0;
-    @Expose(deserialize = false) protected float y = 0;
-    @Expose(deserialize = false) protected float z = 0;
+    protected String unit = "rad/s";
+    protected float x = 0;
+    protected float y = 0;
+    protected float z = 0;
 
-    public Accelerometer() {
+    public Gyroscope() {
         super();
     }
-    public Accelerometer(String uuid, String secret) {
-        super(uuid, SensorType.ACCELEROMETER, secret);
+    public Gyroscope(String uuid, String secret) {
+        super(uuid, SensorType.GYROSCOPE, secret);
     }
 
     @Override
@@ -31,7 +30,7 @@ public class Accelerometer extends Sensor {
 
     @Override
     public String printData() {
-        return ("x = " + x + ", y = " + y + ", z = " + z + "(m/s^2)");
+        return ("x = " + x + ", y = " + y + ", z = " + z + "(rad/s)");
     }
 
     public float getX() {

@@ -1,11 +1,19 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors.supports;
 
 import com.eclubprague.iot.android.driothub.cloud.sensors.Accelerometer;
+import com.eclubprague.iot.android.driothub.cloud.sensors.AmbientThermometer;
+import com.eclubprague.iot.android.driothub.cloud.sensors.Barometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.ESCLed;
 import com.eclubprague.iot.android.driothub.cloud.sensors.ESCThermometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.GPS;
+import com.eclubprague.iot.android.driothub.cloud.sensors.GravitySensor;
+import com.eclubprague.iot.android.driothub.cloud.sensors.Gyroscope;
+import com.eclubprague.iot.android.driothub.cloud.sensors.HumiditySensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.LightSensor;
+import com.eclubprague.iot.android.driothub.cloud.sensors.LinearAccelerometer;
+import com.eclubprague.iot.android.driothub.cloud.sensors.Magnetometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.ProximitySensor;
+import com.eclubprague.iot.android.driothub.cloud.sensors.RotationSensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -37,6 +45,22 @@ public class SensorDeserializer implements JsonDeserializer<Sensor> {
                 return context.deserialize(json, LightSensor.class);
             case SensorType.PROXIMITY:
                 return context.deserialize(json, ProximitySensor.class);
+            case SensorType.MAGNETOMETER:
+                return context.deserialize(json, Magnetometer.class);
+            case SensorType.GYROSCOPE:
+                return context.deserialize(json, Gyroscope.class);
+            case SensorType.PRESSURE:
+                return context.deserialize(json, Barometer.class);
+            case SensorType.GRAVITY:
+                return context.deserialize(json, GravitySensor.class);
+            case SensorType.LINEAR_ACCELEROMETER:
+                return context.deserialize(json, LinearAccelerometer.class);
+            case SensorType.ROTATION:
+                return context.deserialize(json, RotationSensor.class);
+            case SensorType.HUMIDITY:
+                return context.deserialize(json, HumiditySensor.class);
+            case SensorType.AMBIENT_THERMOMETER:
+                return context.deserialize(json, AmbientThermometer.class);
             default:
                 throw new JsonParseException("We can't deserialize this type of Sensor.");
         }

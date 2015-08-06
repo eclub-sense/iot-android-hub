@@ -55,4 +55,9 @@ public class BuiltInSensor extends Sensor {
         super.data.clear();
         return super.data;
     }
+
+    @Override
+    public void setData(float[] values) {
+
+    }
 }

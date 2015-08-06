@@ -1,10 +1,13 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import android.hardware.SensorEvent;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -25,6 +28,7 @@ public abstract class Sensor implements Identificable {
     //@Expose protected SensorType type = SensorType.THERMOMETER;
     /*@Expose (serialize = false)*/ protected transient String secret;
     @Expose protected int type = 1;
+    protected String s_type = "sensor";
     protected transient int incr;
     /*@Expose (deserialize = false) protected int battery;
     @Expose (deserialize = false) protected String hubID;*/
@@ -36,6 +40,7 @@ public abstract class Sensor implements Identificable {
     public abstract void readPayload(byte[] data);
     public abstract String printData();
     public abstract List<DataNameValuePair> getDataList();
+    public abstract void setData(float values[]);
 
     protected Sensor() {
 
@@ -44,6 +49,7 @@ public abstract class Sensor implements Identificable {
     protected Sensor(String uuid, int type, String secret) {
         this.uuid = uuid;
         this.type = type;
+        this.s_type = SensorType.getStringSensorType(type);
         this.secret = secret;
     }
 

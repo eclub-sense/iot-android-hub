@@ -3,23 +3,22 @@ package com.eclubprague.iot.android.driothub.cloud.sensors;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.Gson;
-import com.google.gson.annotations.Expose;
 
 import java.util.List;
 
 /**
- * Created by Dat on 28.7.2015.
+ * Created by Dat on 6.8.2015.
  */
-public class ProximitySensor extends Sensor {
+public class AmbientThermometer extends Sensor {
 
-    @Expose(deserialize = false) protected String unit = "cm";
-    @Expose(deserialize = false) protected float proximity = 0;
+    protected String unit = "°C";
+    protected float temperature = 0;
 
-    public ProximitySensor() {
+    public AmbientThermometer() {
         super();
     }
-    public ProximitySensor(String uuid, String secret) {
-        super(uuid, SensorType.PROXIMITY, secret);
+    public AmbientThermometer(String uuid, String secret) {
+        super(uuid, SensorType.AMBIENT_THERMOMETER, secret);
     }
 
     @Override
@@ -29,17 +28,16 @@ public class ProximitySensor extends Sensor {
 
     @Override
     public String printData() {
-        return ("proximity = " + proximity + " cm");
+        return ("temperature = " + temperature + " °C");
     }
 
-    public float getProximity() {
-        return proximity;
+    public float getTemperature() {
+        return temperature;
     }
 
     public String getUnit() {
         return unit;
     }
-
 
     @Override
     public String toString() {
@@ -50,12 +48,12 @@ public class ProximitySensor extends Sensor {
     @Override
     public List<DataNameValuePair> getDataList() {
         data.clear();
-        data.add(new DataNameValuePair("proximity", Float.toString(proximity)));
+        data.add(new DataNameValuePair("temperature", Float.toString(temperature)));
         return data;
     }
 
     @Override
     public void setData(float[] values) {
-        proximity = values[0];
+        temperature = values[0];
     }
 }

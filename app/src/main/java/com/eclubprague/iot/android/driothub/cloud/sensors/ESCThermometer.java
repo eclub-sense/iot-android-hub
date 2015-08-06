@@ -2,6 +2,7 @@ package com.eclubprague.iot.android.driothub.cloud.sensors;
 
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
 import java.util.List;
@@ -42,8 +43,8 @@ public class ESCThermometer extends Sensor {
 
     @Override
     public String toString() {
-        return "ESCThermometer [temperature=" + temperature + ", pressure=" + pressure + ", uuid=" + uuid + ", type="
-                + type + ", secret=" + secret + "]";
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 
     @Override
@@ -52,5 +53,9 @@ public class ESCThermometer extends Sensor {
         data.add(new DataNameValuePair("temperature", Integer.toString(temperature)));
         data.add(new DataNameValuePair("pressure", Integer.toString(pressure)));
         return data;
+    }
+
+    @Override
+    public void setData(float[] values) {
     }
 }

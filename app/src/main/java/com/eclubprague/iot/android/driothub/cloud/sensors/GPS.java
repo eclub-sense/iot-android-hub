@@ -3,6 +3,7 @@ package com.eclubprague.iot.android.driothub.cloud.sensors;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorDataWrapper;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 
 import java.util.List;
@@ -12,8 +13,8 @@ import java.util.List;
  */
 public class GPS  extends Sensor {
 
-    @Expose(deserialize = false) protected double latitude = -1;
-    @Expose (deserialize = false) protected double longitude = -1;
+    /*@Expose(deserialize = false)*/ protected double latitude = -1;
+    protected double longitude = -1;
 
     public GPS() {
         super();
@@ -47,8 +48,8 @@ public class GPS  extends Sensor {
 
     @Override
     public String toString() {
-        return "GPS [latitude=" + latitude + ", longitude=" + longitude + ", uuid=" + uuid + ", type="
-                + type + ", secret=" + secret + "]";
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 
     @Override
@@ -57,5 +58,9 @@ public class GPS  extends Sensor {
         data.add(new DataNameValuePair("latitude", Double.toString(latitude)));
         data.add(new DataNameValuePair("longitude", Double.toString(longitude)));
         return data;
+    }
+
+    @Override
+    public void setData(float[] values) {
     }
 }
