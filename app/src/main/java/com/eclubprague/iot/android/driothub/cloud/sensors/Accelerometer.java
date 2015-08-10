@@ -1,5 +1,6 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.Gson;
@@ -19,8 +20,8 @@ public class Accelerometer extends Sensor {
     public Accelerometer() {
         super();
     }
-    public Accelerometer(String uuid, String secret) {
-        super(uuid, SensorType.ACCELEROMETER, secret);
+    public Accelerometer(String uuid, String secret, Hub hub) {
+        super(uuid, SensorType.ACCELEROMETER, secret, hub);
     }
 
     @Override
@@ -63,10 +64,10 @@ public class Accelerometer extends Sensor {
 
     @Override
     public List<DataNameValuePair> getDataList() {
-        data.clear();
-        data.add(new DataNameValuePair("x", Float.toString(x)));
-        data.add(new DataNameValuePair("y", Float.toString(y)));
-        data.add(new DataNameValuePair("z", Float.toString(z)));
-        return data;
+        measured.clear();
+        measured.add(new DataNameValuePair("x", Float.toString(x)));
+        measured.add(new DataNameValuePair("y", Float.toString(y)));
+        measured.add(new DataNameValuePair("z", Float.toString(z)));
+        return measured;
     }
 }

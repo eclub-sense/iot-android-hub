@@ -1,5 +1,6 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.Gson;
@@ -17,8 +18,8 @@ public class ProximitySensor extends Sensor {
     public ProximitySensor() {
         super();
     }
-    public ProximitySensor(String uuid, String secret) {
-        super(uuid, SensorType.PROXIMITY, secret);
+    public ProximitySensor(String uuid, String secret, Hub hub) {
+        super(uuid, SensorType.PROXIMITY, secret, hub);
     }
 
     @Override
@@ -47,9 +48,10 @@ public class ProximitySensor extends Sensor {
 
     @Override
     public List<DataNameValuePair> getDataList() {
-        data.clear();
-        data.add(new DataNameValuePair("proximity", Float.toString(proximity)));
-        return data;
+        measured.clear();
+        measured.add(new DataNameValuePair("proximity", Float.toString(proximity)));
+        measured.add(new DataNameValuePair("unit", unit));
+        return measured;
     }
 
     @Override

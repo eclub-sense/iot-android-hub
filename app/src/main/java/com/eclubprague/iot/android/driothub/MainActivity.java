@@ -29,6 +29,9 @@ public class MainActivity extends ActionBarActivity {
 
     private boolean bound = false;
 
+    private String USERNAME = "DAT";
+    private String PASSWORD = "567";
+
     private BuiltInSensorsProviderService builtInSensorsProviderService;
 
     /** Defines callbacks for service binding, passed to bindService() */
@@ -47,7 +50,7 @@ public class MainActivity extends ActionBarActivity {
             * run of the Service, they serve only for testing purposes and will be removed
             * in the end.
             */
-            binder.getService().initBuiltInSensorsCollection(MainActivity.this);
+            binder.getService().initService(MainActivity.this, USERNAME, PASSWORD);
 
             //set Service bounded to true
             bound = true;
@@ -66,6 +69,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listView = (ListView) findViewById(R.id.builtins_list);
+//        USERNAME = getIntent().getStringExtra(LoginActivity.USERNAME);
+//        PASSWORD = getIntent().getStringExtra(LoginActivity.PASSWORD);
     }
 
     @Override

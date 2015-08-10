@@ -1,5 +1,6 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.Switch;
@@ -15,8 +16,8 @@ public class ESCLed extends Sensor implements WriteableSensor {
 
     @Expose(deserialize = false) protected Switch led;
 
-    public ESCLed(String uuid, String secret) {
-        super(uuid, SensorType.LED, secret);
+    public ESCLed(String uuid, String secret, Hub hub) {
+        super(uuid, SensorType.LED, secret, hub);
     }
 
     public void readPayload(byte[] data) {
@@ -55,14 +56,14 @@ public class ESCLed extends Sensor implements WriteableSensor {
     @Override
     public String toString() {
         return "ESCLed [led=" + led + ", uuid=" + uuid + ", type=" + type + ", secret=" + secret + ", incr=" + incr
-                + /*", battery=" + battery + ", hubID=" + hubID +*/ ", hub=" + hub + ", reserved="
+                + /*", battery=" + battery + ", hubID=" + hubID +*/ ", hub=" + hubRef.get() + ", reserved="
                 + Arrays.toString(reserved) + "]";
     }
 
     @Override
     public List<DataNameValuePair> getDataList() {
-        data.clear();
-        return data;
+        measured.clear();
+        return measured;
     }
 
     @Override

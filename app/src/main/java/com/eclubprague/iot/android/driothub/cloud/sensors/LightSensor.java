@@ -1,5 +1,6 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.Gson;
@@ -17,8 +18,8 @@ public class LightSensor extends Sensor {
     public LightSensor() {
         super();
     }
-    public LightSensor(String uuid, String secret) {
-        super(uuid, SensorType.LIGHT, secret);
+    public LightSensor(String uuid, String secret, Hub hub) {
+        super(uuid, SensorType.LIGHT, secret, hub);
     }
 
     @Override
@@ -46,9 +47,10 @@ public class LightSensor extends Sensor {
 
     @Override
     public List<DataNameValuePair> getDataList() {
-        data.clear();
-        data.add(new DataNameValuePair("illumination", Float.toString(illumination)));
-        return data;
+        measured.clear();
+        measured.add(new DataNameValuePair("illumination", Float.toString(illumination)));
+        measured.add(new DataNameValuePair("unit", unit));
+        return measured;
     }
 
     @Override

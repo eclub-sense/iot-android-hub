@@ -1,5 +1,6 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.Gson;
@@ -14,8 +15,8 @@ public class AmbientThermometer extends Sensor {
     protected String unit = "\u00B0" + "C";
     protected float temperature = 0;
 
-    public AmbientThermometer(String uuid, String secret) {
-        super(uuid, SensorType.AMBIENT_THERMOMETER, secret);
+    public AmbientThermometer(String uuid, String secret, Hub hub) {
+        super(uuid, SensorType.AMBIENT_THERMOMETER, secret, hub);
     }
 
     @Override
@@ -43,9 +44,10 @@ public class AmbientThermometer extends Sensor {
 
     @Override
     public List<DataNameValuePair> getDataList() {
-        data.clear();
-        data.add(new DataNameValuePair("temperature", Float.toString(temperature)));
-        return data;
+        measured.clear();
+        measured.add(new DataNameValuePair("temperature", Float.toString(temperature)));
+        measured.add(new DataNameValuePair("unit", unit));
+        return measured;
     }
 
     @Override

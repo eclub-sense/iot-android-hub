@@ -18,7 +18,10 @@ public class WSDataWrapper {
 
     private transient List<Sensor> sensors;
 
-    public WSDataWrapper(List<Sensor> sensors) {
+    private String uuid;
+
+    public WSDataWrapper(List<Sensor> sensors, String uuid) {
+        this.uuid = uuid;
         this.sensors = sensors;
         for(int i = 0; i < sensors.size(); i++) {
             data.add(new SensorDataWrapper(

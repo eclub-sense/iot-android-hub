@@ -1,5 +1,6 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,16 +21,17 @@ import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 public abstract class Sensor implements Identificable {
 
     protected String uuid;
-    protected transient String secret;
-    protected int type = SensorType.THERMOMETER;
+    protected String hub_uuid;
+    protected String secret;
+    protected String type = Integer.toString(SensorType.THERMOMETER);
     protected String s_type = "sensor";
     protected transient int incr;
     /*@Expose (deserialize = false) protected int battery;
     @Expose (deserialize = false) protected String hubID;*/
-    protected transient Hub hub;
+    protected transient WeakReference<Hub> hubRef;
     protected transient byte reserved[] = new byte[3];
 
-    protected transient List<DataNameValuePair> data = new ArrayList<>();
+    protected transient List<DataNameValuePair> measured = new ArrayList<>();
 
     public abstract void readPayload(byte[] data);
     public abstract String printData();
@@ -40,9 +42,11 @@ public abstract class Sensor implements Identificable {
 
     }
 
-    protected Sensor(String uuid, int type, String secret) {
+    protected Sensor(String uuid, int type, String secret, Hub hub) {
+        this.hubRef = new WeakReference<Hub>(hub);
+        this.hub_uuid = hubRef.get().getUuid();
         this.uuid = uuid;
-        this.type = type;
+        this.type = Integer.toString(type);
         this.s_type = SensorType.getStringSensorType(type);
         this.secret = secret;
     }
@@ -76,7 +80,7 @@ public abstract class Sensor implements Identificable {
         return String.format("%08d", uuid);
     }*/
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
@@ -92,13 +96,13 @@ public abstract class Sensor implements Identificable {
         return battery;
     }*/
 
-    public Hub getHub() {
-        return hub;
-    }
-
-    public void setHub(Hub hub) {
-        this.hub = hub;
-    }
+//    public Hub getHub() {
+//        return hub;
+//    }
+//
+//    public void setHub(Hub hub) {
+//        this.hub = hub;
+//    }
 
     public void setUuid(String uuid) {
         this.uuid = uuid;

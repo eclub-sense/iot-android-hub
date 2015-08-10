@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -33,6 +34,7 @@ import com.eclubprague.iot.android.driothub.cloud.sensors.LightSensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.ProximitySensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
 import com.eclubprague.iot.android.driothub.cloud.user.User;
+import com.eclubprague.iot.android.driothub.tasks.SensorRegistrationTask;
 import com.eclubprague.iot.android.driothub.tasks.UserRegistrationTask;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -86,10 +88,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     public IBinder onBind(Intent intent) {
         //TODO new UserRegisterTask(this).execute(new User("DAT", "999"));
 
-        new UserRegistrationTask(this).execute(USER);
-
         mGoogleApiClient.connect();
-        startTimer();
         return binder;
     }
 
@@ -103,7 +102,11 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         stopLocationUpdates();
         mSensorManager.unregisterListener(this);
         stopTimerTask();
-        mConnection.disconnect();
+        try {
+            mConnection.disconnect();
+        } catch (Exception e) {
+            Log.e("onDisconnect", e.toString());
+        }
         return super.onUnbind(intent);
     }
 
@@ -111,6 +114,21 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     public void onDestroy() {
         super.onDestroy();
     }
+
+    public void initService(MainActivity activity, String username, String password) {
+
+        this.activityRef = new WeakReference<>(activity);
+        context = activity;
+        initBuiltInSensorsCollection();
+
+        USERNAME = username;
+        PSSWD = password;
+        USER = new User(USERNAME,PSSWD);
+        THISHUB = new Hub(UUID, USER);
+
+        new UserRegistrationTask(this).execute(USER);
+    }
+
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -123,6 +141,8 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
             return BuiltInSensorsProviderService.this;
         }
     }
+
+
 
     //----------------------------------------------------------------
     // GOOGLE API CLIENT OVERRIDE METHODS
@@ -248,71 +268,69 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     private String gpsKey = "GPS_phamtdat";
 
-    public void initBuiltInSensorsCollection(MainActivity activity) {
-        this.activityRef = new WeakReference<>(activity);
-        context = activity;
+    public void initBuiltInSensorsCollection() {
         if(context == null) return;
         mSensorManager = (SensorManager) context.getSystemService(context.SENSOR_SERVICE);
         deviceSensors = mSensorManager.getSensorList(android.hardware.Sensor.TYPE_ALL);
 
-        builtInSensors.put(gpsKey, new GPS(UUID, "gps_secret"));
+        builtInSensors.put(gpsKey, new GPS(Integer.toString(0), "gps_secret", THISHUB));
 
         for(int i = 0; i < deviceSensors.size(); i++) {
             android.hardware.Sensor sensor = deviceSensors.get(i);
             switch(sensor.getType()) {
                 case android.hardware.Sensor.TYPE_ACCELEROMETER:
                     builtInSensors.put(sensor.getName(),
-                            new Accelerometer(UUID, sensor.getName()));
+                            new Accelerometer(Integer.toString(i+100), sensor.getName(), THISHUB));
                     mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                     break;
                 case android.hardware.Sensor.TYPE_LIGHT:
                     builtInSensors.put(sensor.getName(),
-                            new LightSensor(UUID, sensor.getName()));
+                            new LightSensor(Integer.toString(i+100), sensor.getName(), THISHUB));
                     mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                     break;
                 case android.hardware.Sensor.TYPE_PROXIMITY:
                     builtInSensors.put(sensor.getName(),
-                            new ProximitySensor(UUID, sensor.getName()));
+                            new ProximitySensor(Integer.toString(i+100), sensor.getName(), THISHUB));
                     mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                     break;
                 case SensorType.MAGNETOMETER:
                     builtInSensors.put(sensor.getName(),
-                            new Magnetometer(UUID, sensor.getName()));
+                            new Magnetometer(Integer.toString(i+100), sensor.getName(), THISHUB));
                     mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                     break;
                 case SensorType.GYROSCOPE:
                     builtInSensors.put(sensor.getName(),
-                            new Gyroscope(UUID, sensor.getName()));
+                            new Gyroscope(Integer.toString(i+100), sensor.getName(), THISHUB));
                     mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                     break;
                 case SensorType.PRESSURE:
                     builtInSensors.put(sensor.getName(),
-                            new Barometer(UUID, sensor.getName()));
+                            new Barometer(Integer.toString(i+100), sensor.getName(), THISHUB));
                     mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                     break;
                 case SensorType.GRAVITY:
                     builtInSensors.put(sensor.getName(),
-                            new GravitySensor(UUID, sensor.getName()));
+                            new GravitySensor(Integer.toString(i+100), sensor.getName(), THISHUB));
                     mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                     break;
                 case SensorType.LINEAR_ACCELEROMETER:
                     builtInSensors.put(sensor.getName(),
-                            new LinearAccelerometer(UUID, sensor.getName()));
+                            new LinearAccelerometer(Integer.toString(i+100), sensor.getName(), THISHUB));
                     mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                     break;
                 case SensorType.ROTATION:
                     builtInSensors.put(sensor.getName(),
-                            new RotationSensor(UUID, sensor.getName()));
+                            new RotationSensor(Integer.toString(i+100), sensor.getName(), THISHUB));
                     mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                     break;
                 case SensorType.HUMIDITY:
                     builtInSensors.put(sensor.getName(),
-                            new HumiditySensor(UUID, sensor.getName()));
+                            new HumiditySensor(Integer.toString(i+100), sensor.getName(), THISHUB));
                     mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                     break;
                 case SensorType.AMBIENT_THERMOMETER:
                     builtInSensors.put(sensor.getName(),
-                            new AmbientThermometer(UUID, sensor.getName()));
+                            new AmbientThermometer(Integer.toString(i+100), sensor.getName(), THISHUB));
                     mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
                     break;
                 default:
@@ -341,6 +359,16 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         return sensors;
     }
 
+    private boolean sensorsRegistered = false;
+
+    public void registerSensors() {
+        sensorsRegistered = true;
+        List<Sensor> sensors = getBuiltInSensors();
+        for(int i = 0; i < sensors.size(); i++) {
+            new SensorRegistrationTask().execute(sensors.get(i));
+        }
+    }
+
     //----------------------------------------------------------------
     // WEBSOCKET COMMUNICATION WITH CLOUD-SIDE
     //----------------------------------------------------------------
@@ -356,12 +384,12 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     */
 
     private final String UUID = "2309";
-    private final String USERNAME = "User";
-    private final String PSSWD = "123";
-    private final User USER = new User(USERNAME,PSSWD);
+    private String USERNAME = "DAT";
+    private String PSSWD = "567";
+    private User USER = new User(USERNAME,PSSWD);
     private final String WSURI = "ws://192.168.201.222:8080/events";
     //private final String WSURI = "ws://echo.websocket.org";
-    private final Hub THISHUB = new Hub(UUID, USER);
+    private Hub THISHUB = new Hub(UUID, USER);
 
 //    @Override
 //    public void handleUserRegistered(UserRegisterTask.UserRegisterResult result) {
@@ -400,6 +428,12 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                 @Override
                 public void onTextMessage(String payload) {
                     Log.d("WonMessage", "Got echo: " + payload);
+                    if(payload.contains("LOGIN_ACK")) {
+                        if(!sensorsRegistered) {
+                            registerSensors();
+                        }
+                        startTimer();
+                    }
                 }
 
                 @Override
@@ -430,6 +464,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
 
     public void startTimer() {
+        if(timer != null) return;
         //set a new Timer
         timer = new Timer();
         //initialize the TimerTask's job
@@ -457,7 +492,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                         //send updated data
                         if(mConnection.isConnected()) {
 
-                            WSDataWrapper data = new WSDataWrapper(getBuiltInSensors());
+                            WSDataWrapper data = new WSDataWrapper(getBuiltInSensors(), THISHUB.getUuid());
 
                             Log.e("WSDATA", data.toString());
 

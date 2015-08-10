@@ -1,5 +1,6 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.Gson;
@@ -18,8 +19,8 @@ public class ESCThermometer extends Sensor {
     public ESCThermometer() {
         super();
     }
-    public ESCThermometer(String uuid, String secret) {
-        super(uuid, SensorType.THERMOMETER, secret);
+    public ESCThermometer(String uuid, String secret, Hub hub) {
+        super(uuid, SensorType.THERMOMETER, secret, hub);
     }
 
     @Override
@@ -48,10 +49,10 @@ public class ESCThermometer extends Sensor {
 
     @Override
     public List<DataNameValuePair> getDataList() {
-        data.clear();
-        data.add(new DataNameValuePair("temperature", Integer.toString(temperature)));
-        data.add(new DataNameValuePair("pressure", Integer.toString(pressure)));
-        return data;
+        measured.clear();
+        measured.add(new DataNameValuePair("temperature", Integer.toString(temperature)));
+        measured.add(new DataNameValuePair("pressure", Integer.toString(pressure)));
+        return measured;
     }
 
     @Override

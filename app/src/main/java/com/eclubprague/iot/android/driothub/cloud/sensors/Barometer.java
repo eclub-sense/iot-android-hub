@@ -1,5 +1,6 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.Gson;
@@ -17,8 +18,8 @@ public class Barometer extends Sensor {
     public Barometer() {
         super();
     }
-    public Barometer(String uuid, String secret) {
-        super(uuid, SensorType.PRESSURE, secret);
+    public Barometer(String uuid, String secret, Hub hub) {
+        super(uuid, SensorType.PRESSURE, secret, hub);
     }
 
     @Override
@@ -46,9 +47,10 @@ public class Barometer extends Sensor {
 
     @Override
     public List<DataNameValuePair> getDataList() {
-        data.clear();
-        data.add(new DataNameValuePair("pressure", Float.toString(pressure)));
-        return data;
+        measured.clear();
+        measured.add(new DataNameValuePair("pressure", Float.toString(pressure)));
+        measured.add(new DataNameValuePair("unit", unit));
+        return measured;
     }
 
     @Override

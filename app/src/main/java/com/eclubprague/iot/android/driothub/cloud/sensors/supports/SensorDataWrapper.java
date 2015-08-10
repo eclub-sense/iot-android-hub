@@ -10,12 +10,14 @@ import java.util.List;
  */
 public class SensorDataWrapper {
 
-    private List<DataNameValuePair> data;
-    private Sensor sensor;
+    private List<DataNameValuePair> measured;
+    private transient Sensor sensor;
+    private String uuid;
 
     public SensorDataWrapper(Sensor sensor) {
         this.sensor = sensor;
-        this.data = sensor.getDataList();
+        this.measured = sensor.getDataList();
+        this.uuid = sensor.getUuid();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
+import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
 import com.google.gson.Gson;
@@ -17,8 +18,8 @@ public class GPS  extends Sensor {
     public GPS() {
         super();
     }
-    public GPS(String uuid, String secret) {
-        super(uuid, SensorType.GPS, secret);
+    public GPS(String uuid, String secret, Hub hub) {
+        super(uuid, SensorType.GPS, secret, hub);
     }
 
     @Override
@@ -51,10 +52,10 @@ public class GPS  extends Sensor {
 
     @Override
     public List<DataNameValuePair> getDataList() {
-        data.clear();
-        data.add(new DataNameValuePair("latitude", Double.toString(latitude)));
-        data.add(new DataNameValuePair("longitude", Double.toString(longitude)));
-        return data;
+        measured.clear();
+        measured.add(new DataNameValuePair("latitude", Double.toString(latitude)));
+        measured.add(new DataNameValuePair("longitude", Double.toString(longitude)));
+        return measured;
     }
 
     @Override
