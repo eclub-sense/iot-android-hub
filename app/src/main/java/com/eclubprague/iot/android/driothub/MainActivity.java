@@ -69,8 +69,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listView = (ListView) findViewById(R.id.builtins_list);
-//        USERNAME = getIntent().getStringExtra(LoginActivity.USERNAME);
-//        PASSWORD = getIntent().getStringExtra(LoginActivity.PASSWORD);
+        USERNAME = getIntent().getStringExtra(LoginActivity.USERNAME);
+        PASSWORD = getIntent().getStringExtra(LoginActivity.PASSWORD);
     }
 
     @Override

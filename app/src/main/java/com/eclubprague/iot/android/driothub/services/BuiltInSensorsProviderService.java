@@ -365,7 +365,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         sensorsRegistered = true;
         List<Sensor> sensors = getBuiltInSensors();
         for(int i = 0; i < sensors.size(); i++) {
-            new SensorRegistrationTask().execute(sensors.get(i));
+            new SensorRegistrationTask(USER).execute(sensors.get(i));
         }
     }
 
@@ -387,7 +387,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     private String USERNAME = "DAT";
     private String PSSWD = "567";
     private User USER = new User(USERNAME,PSSWD);
-    private final String WSURI = "ws://192.168.201.222:8080/events";
+    private final String WSURI = "ws://147.32.107.139:8080/events";
     //private final String WSURI = "ws://echo.websocket.org";
     private Hub THISHUB = new Hub(UUID, USER);
 

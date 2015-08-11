@@ -35,7 +35,7 @@ public class UserRegistrationTask extends AsyncTask<User, Void, Boolean> {
         * Cloud-side not yet implemented
         */
         try {
-            ClientResource cr = new ClientResource("http://192.168.201.222:8080/user_registration");
+            ClientResource cr = new ClientResource("http://147.32.107.139:8080/user_registration");
             UserRegistrator sr = cr.wrap(UserRegistrator.class);
             sr.store(users[0]);
         } catch (Exception e) {
