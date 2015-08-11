@@ -126,7 +126,10 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         USER = new User(USERNAME,PSSWD);
         THISHUB = new Hub(UUID, USER);
 
-        new UserRegistrationTask(this).execute(USER);
+        //new UserRegistrationTask(this).execute(USER);
+        // instead of the registration, we give you
+        // CONNECT TO SOCKET :-)
+        connectWebSocket(THISHUB);
     }
 
 
