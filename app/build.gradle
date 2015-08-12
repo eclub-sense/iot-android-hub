@@ -36,12 +36,12 @@ ext.restletVersion = "2.2.3"
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.google.android.gms:play-services:7.5.0'
     compile "org.restlet.android:org.restlet:${restletVersion}"
     compile "org.restlet.android:org.restlet.ext.gson:${restletVersion}"
-    compile 'commons-codec:commons-codec:1.10'
     compile files('libs/autobahn-0.5.0.jar')
     compile files('libs/jackson-core-asl-1.9.7.jar')
     compile files('libs/jackson-mapper-asl-1.9.7.jar')
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.google.android.gms:play-services:7.5.0'
+    compile 'commons-codec:commons-codec:1.10'
 }

@@ -4,4 +4,6 @@
     <string name="hello_world">Loading GPS data, please wait ... </string>
     <string name="action_settings">Settings</string>
     <string name="action_get_current_gps">Show GPS</string>
+    <string name="action_stop_service">Stop Service</string>
+    <string name="action_register_sensors">Register Sensors</string>
 </resources>

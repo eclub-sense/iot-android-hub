@@ -27,8 +27,6 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    private boolean bound = false;
-
     private String USERNAME = "DAT";
     private String PASSWORD = "567";
 
@@ -50,15 +48,13 @@ public class MainActivity extends ActionBarActivity {
             * run of the Service, they serve only for testing purposes and will be removed
             * in the end.
             */
-            binder.getService().initService(MainActivity.this, USERNAME, PASSWORD);
+            MainActivity.this.builtInSensorsProviderService = binder.getService();
 
             //set Service bounded to true
-            bound = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            bound = false;
         }
     };
 
@@ -68,9 +64,6 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listView = (ListView) findViewById(R.id.builtins_list);
-        USERNAME = getIntent().getStringExtra(LoginActivity.USERNAME);
-        PASSWORD = getIntent().getStringExtra(LoginActivity.PASSWORD);
     }
 
     @Override
@@ -85,10 +78,10 @@ public class MainActivity extends ActionBarActivity {
     protected void onStop() {
         super.onStop();
         // Unbind from the Service
-        if (bound) {
-            unbindService(connection);
-            bound = false;
-        }
+//        if (bound) {
+//            unbindService(connection);
+//            bound = false;
+//        }
     }
 
     @Override
@@ -110,26 +103,16 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
 
-        if(id == R.id.action_get_current_gps) {
+        if(id == R.id.action_stop_service) {
+            builtInSensorsProviderService.stopSelf();
             return true;
         }
 
+        if(id == R.id.action_register_sensors) {
+            builtInSensorsProviderService.registerSensors();
+        }
+
         return super.onOptionsItemSelected(item);
-    }
-
-    //-------------------------------------------------
-    // UI elements, will be removed in the end
-    //-------------------------------------------------
-
-    static ListView listView;
-
-    public void actualizeListView(List<Sensor> sensors) {
-        BuiltInSensorsListViewAdapter adapter = new BuiltInSensorsListViewAdapter(this,
-                android.R.layout.simple_list_item_1, sensors);
-
-        // Assign adapter to ListView
-        listView.setAdapter(adapter);
-        listView.invalidate();
     }
 
 }

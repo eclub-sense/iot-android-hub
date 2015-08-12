@@ -6,8 +6,12 @@
           android:title="@string/action_settings"
           android:orderInCategory="100"
           app:showAsAction="never"/>
-      <item android:id="@+id/action_get_current_gps"
-          android:title="@string/action_get_current_gps"
-          android:orderInCategory="100"
-          app:showAsAction="never"/>
+    <item android:id="@+id/action_stop_service"
+        android:title="@string/action_stop_service"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_register_sensors"
+        android:title="@string/action_register_sensors"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"/>
 </menu>

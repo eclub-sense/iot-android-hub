@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
 public class UserRegistrationTask extends AsyncTask<User, Void, Boolean> {
 
     public interface TaskDelegate {
-        public void onUserRegistrationTaskCompleted();
+        public void onUserRegistrationTaskCompleted(boolean success);
     }
 
     private WeakReference<TaskDelegate> delegateRef;
@@ -48,10 +48,6 @@ public class UserRegistrationTask extends AsyncTask<User, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if(!success) {
-            Log.e("LOGIN","Failed to log in");
-            return;
-        }
-        delegateRef.get().onUserRegistrationTaskCompleted();
+        delegateRef.get().onUserRegistrationTaskCompleted(success);
     }
 }

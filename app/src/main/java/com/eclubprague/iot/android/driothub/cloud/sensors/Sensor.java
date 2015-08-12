@@ -92,6 +92,10 @@ public abstract class Sensor implements Identificable {
         return incr;
     }
 
+    public String getStringType() {
+        return s_type;
+    }
+
     /*public int getBattery() {
         return battery;
     }*/
