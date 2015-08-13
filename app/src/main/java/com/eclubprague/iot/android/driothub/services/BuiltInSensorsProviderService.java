@@ -130,9 +130,11 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         PSSWD = password;
         USER = new User(USERNAME, PSSWD);
 
-        int uuid = stringToInt(USERNAME) * stringToInt(PSSWD) * (stringToInt(PSSWD)%567 + 1) +
-                stringToInt(android.os.Build.MODEL)*(stringToInt(USERNAME)%9 + 1);
-        if(uuid < 0) uuid *= -1;
+//        int uuid = stringToInt(USERNAME) * stringToInt(PSSWD) * (stringToInt(PSSWD)%567 + 1) +
+//                stringToInt(android.os.Build.MODEL)*(stringToInt(USERNAME)%9 + 1);
+        int uuid = stringToInt(USERNAME) * stringToInt(PSSWD) * 777 +
+                stringToInt(android.os.Build.MODEL);
+//        if(uuid < 0) uuid *= -1;
 
         UUID = Integer.toString(uuid);
 
