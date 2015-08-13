@@ -17,7 +17,7 @@ public class SensorDataWrapper {
 
     public SensorDataWrapper(Sensor sensor) {
         this.sensor = sensor;
-        this.measured = sensor.getDataList();
+        this.measured = sensor.getMeasured();
         this.uuid = sensor.getUuid();
         this.s_type = sensor.getStringType();
     }

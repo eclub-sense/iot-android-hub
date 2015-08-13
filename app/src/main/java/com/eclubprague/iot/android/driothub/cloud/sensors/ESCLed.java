@@ -61,7 +61,7 @@ public class ESCLed extends Sensor implements WriteableSensor {
     }
 
     @Override
-    public List<DataNameValuePair> getDataList() {
+    public List<DataNameValuePair> getMeasured() {
         measured.clear();
         return measured;
     }

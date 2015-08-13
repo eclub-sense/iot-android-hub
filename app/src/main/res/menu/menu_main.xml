@@ -14,4 +14,8 @@
         android:title="@string/action_register_sensors"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_timer"
+        android:title="@string/action_timer"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
 </menu>

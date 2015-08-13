@@ -63,7 +63,7 @@ public class GravitySensor extends Sensor {
     }
 
     @Override
-    public List<DataNameValuePair> getDataList() {
+    public List<DataNameValuePair> getMeasured() {
         measured.clear();
         measured.add(new DataNameValuePair("x", Float.toString(x)));
         measured.add(new DataNameValuePair("y", Float.toString(y)));

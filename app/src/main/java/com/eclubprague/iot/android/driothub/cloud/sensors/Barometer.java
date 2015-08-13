@@ -46,7 +46,7 @@ public class Barometer extends Sensor {
     }
 
     @Override
-    public List<DataNameValuePair> getDataList() {
+    public List<DataNameValuePair> getMeasured() {
         measured.clear();
         measured.add(new DataNameValuePair("pressure", Float.toString(pressure)));
         measured.add(new DataNameValuePair("unit", unit));

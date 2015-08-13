@@ -130,8 +130,9 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         PSSWD = password;
         USER = new User(USERNAME, PSSWD);
 
-        int uuid = stringToInt(USERNAME) * stringToInt(PSSWD) * 777 +
-                stringToInt(android.os.Build.MODEL);
+        int uuid = stringToInt(USERNAME) * stringToInt(PSSWD) * (stringToInt(PSSWD)%567 + 1) +
+                stringToInt(android.os.Build.MODEL)*(stringToInt(USERNAME)%9 + 1);
+        if(uuid < 0) uuid *= -1;
 
         UUID = Integer.toString(uuid);
 
@@ -168,11 +169,8 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                 stringToInt(android.os.Build.MODEL)*100;
 
         THISHUB = new Hub(UUID, USER);
-
-
-        initBuiltInSensorsCollection();
-
         connectWebSocket(THISHUB);
+        initBuiltInSensorsCollection();
     }
 
     private int stringToInt(String param) {
@@ -331,6 +329,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         deviceSensors = mSensorManager.getSensorList(android.hardware.Sensor.TYPE_ALL);
 
         builtInSensors.put(gpsKey, new GPS(Integer.toString(START_ID), "gps_secret_" + Integer.toString(START_ID), THISHUB));
+        builtInSensors.get(gpsKey).setTimer(USER, UUID, 5, new WeakReference<>(mConnection));
 
         for (int i = 0; i < deviceSensors.size(); i++) {
             android.hardware.Sensor sensor = deviceSensors.get(i);
@@ -392,6 +391,9 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                     break;
                 default:
             }
+            if(builtInSensors.get(sensor.getName()) != null) {
+                builtInSensors.get(sensor.getName()).setTimer(USER, UUID, 5, new WeakReference<>(mConnection));
+            }
         }
     }
 
@@ -430,7 +432,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
             new SensorRegistrationTask(USER).execute(sensors.get(i));
         }
 
-        if(!mConnection.isConnected()) connectWebSocket(THISHUB);
+        //if(!mConnection.isConnected()) connectWebSocket(THISHUB);
     }
 
     //----------------------------------------------------------------
@@ -515,7 +517,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         timer = new Timer();
         //initialize the TimerTask's job
         initializeTimerTask();
-        //schedule the timer, after the first 5000ms the TimerTask will run every 10000ms
+        //schedule the timer, after the first 10000ms the TimerTask will run every 5000ms
         timer.schedule(timerTask, 10000, 5000); //
     }
 
@@ -536,14 +538,15 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                         //BuiltInSensorsProviderService.this.activityRef.get().actualizeListView(getBuiltInSensors());
 
                         //send updated data
-                        if (mConnection.isConnected()) {
-
-                            WSDataWrapper data = new WSDataWrapper(getBuiltInSensors(), THISHUB.getUuid());
-
-                            Log.e("WSDATA", data.toString());
-
-                            mConnection.sendTextMessage(data.toString());
-                        }
+                        if(!mConnection.isConnected()) connectWebSocket(THISHUB);
+//                        if (mConnection.isConnected()) {
+//
+//                            WSDataWrapper data = new WSDataWrapper(getBuiltInSensors(), THISHUB.getUuid());
+//
+//                            Log.e("WSDATA", data.toString());
+//
+//                            mConnection.sendTextMessage(data.toString());
+//                        }
                     }
                 });
             }

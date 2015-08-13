@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
@@ -60,6 +61,7 @@ public class LoginActivity extends Activity implements LoginTask.TaskDelegate,
             this.finish();
             return;
         }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_login);
         un=(EditText)findViewById(R.id.et_un);
         pw=(EditText)findViewById(R.id.et_pw);
