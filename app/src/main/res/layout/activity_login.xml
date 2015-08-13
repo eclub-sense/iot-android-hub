@@ -18,6 +18,7 @@
         android:layout_width="150dip"
         android:layout_height="wrap_content"
         android:background="@android:drawable/editbox_background"
+        android:layout_marginLeft="7dip"
         android:layout_toRightOf="@id/tv_un"
         android:layout_alignTop="@id/tv_un"/>
     <TextView
@@ -49,7 +50,16 @@
         android:layout_below="@id/et_pw"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="15dip"
-        android:layout_marginLeft="110dip"
+        android:layout_marginLeft="10dip"
         android:text="Login" />
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="100dip"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_pw"
+        android:layout_toRightOf="@+id/btn_login"
+        android:layout_marginTop="15dip"
+        android:layout_marginLeft="20dip"
+        android:text="Register" />
 
 </RelativeLayout>

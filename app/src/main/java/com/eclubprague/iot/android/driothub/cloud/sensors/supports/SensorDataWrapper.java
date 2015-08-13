@@ -13,11 +13,13 @@ public class SensorDataWrapper {
     private List<DataNameValuePair> measured;
     private transient Sensor sensor;
     private String uuid;
+    private String s_type;
 
     public SensorDataWrapper(Sensor sensor) {
         this.sensor = sensor;
         this.measured = sensor.getDataList();
         this.uuid = sensor.getUuid();
+        this.s_type = sensor.getStringType();
     }
 
     @Override

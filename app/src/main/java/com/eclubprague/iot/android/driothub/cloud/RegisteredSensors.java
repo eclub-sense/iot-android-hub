@@ -14,6 +14,9 @@ public interface RegisteredSensors {
     @Get("json")
     public SensorPaginatedCollection retrieve();
 
+    @Get
+    public String getStringData();
+
     @Get("json")
     public Sensor get(int uuid);
 
