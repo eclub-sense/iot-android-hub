@@ -8,7 +8,7 @@ import android.widget.Toast;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
 import com.eclubprague.iot.android.driothub.cloud.user.User;
 
-import java.lang.ref.WeakReference;
+//import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -21,14 +21,20 @@ import de.tavendo.autobahn.WebSocketConnection;
  */
 public class SensorDataSendingTimer {
 
-    private WeakReference<Sensor> sensorRef;
+    //private ArrayList<Sensor> sensorRef;
+    private Sensor sensor;
     private User user;
     private int seconds = 5;
-    private WeakReference<WebSocketConnection> connectionRef;
+    //private ArrayList<WebSocketConnection> connectionRef;
+    private WebSocketConnection connection;
     private String hub_uuid;
 
-    public WeakReference<WebSocketConnection> getConnectionRef() {
+    /*public ArrayList<WebSocketConnection> getConnectionRef() {
         return connectionRef;
+    }*/
+
+    public WebSocketConnection getConnection() {
+        return connection;
     }
 
     public String getHub_uuid() {
@@ -39,12 +45,14 @@ public class SensorDataSendingTimer {
         return user;
     }
 
-    public SensorDataSendingTimer(WeakReference<Sensor> sensorRef, User user, String hub_uuid,
-                                  int seconds, WeakReference<WebSocketConnection> connectionRef) {
-        this.sensorRef = new WeakReference<>(sensorRef.get());
+    public SensorDataSendingTimer(/*ArrayList<Sensor> sensorRef*/ Sensor sensor, User user, String hub_uuid,
+                                  int seconds, /*ArrayList<WebSocketConnection> connectionRef*/ WebSocketConnection connection) {
+        //this.sensorRef = sensorRef;
+        this.sensor = sensor;
         this.user = user;
         this.seconds = seconds;
-        this.connectionRef = new WeakReference<>(connectionRef.get());
+        //this.connectionRef = connectionRef;
+        this.connection = connection;
         this.hub_uuid = hub_uuid;
         if(this.seconds != 0) {
             startTimer();
@@ -91,15 +99,15 @@ public class SensorDataSendingTimer {
                     public void run() {
 
                         //TODO SEND SENSOR DATA
-                        if (connectionRef.get().isConnected()) {
+                        if (/*connectionRef.get()*/connection.isConnected()) {
 
                             List<Sensor> sensorList = new ArrayList<>();
-                            sensorList.add(sensorRef.get());
+                            sensorList.add(/*sensorRef.get()*/sensor);
                             WSDataWrapper data = new WSDataWrapper(sensorList, hub_uuid);
 
                             Log.e("WSDATA", data.toString());
 
-                            connectionRef.get().sendTextMessage(data.toString());
+                            /*connectionRef.get()*/connection.sendTextMessage(data.toString());
                         }
 
                     }

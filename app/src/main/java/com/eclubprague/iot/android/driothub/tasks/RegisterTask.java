@@ -20,10 +20,12 @@ public class RegisterTask extends AsyncTask<User, Void, Boolean> {
         public void onRegisterCompleted(boolean success);
     }
 
-    private WeakReference<TaskDelegate> delegateRef;
+    //private WeakReference<TaskDelegate> delegateRef;
+    private TaskDelegate delegate;
 
     public RegisterTask(TaskDelegate delegate) {
-        delegateRef = new WeakReference<TaskDelegate>(delegate);
+        //delegateRef = new WeakReference<TaskDelegate>(delegate);
+        this.delegate = delegate;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class RegisterTask extends AsyncTask<User, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        delegateRef.get().onRegisterCompleted(success);
+        /*delegateRef.get()*/delegate.onRegisterCompleted(success);
     }
 }
 

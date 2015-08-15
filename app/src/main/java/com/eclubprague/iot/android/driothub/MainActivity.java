@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.*;
 import android.content.pm.ActivityInfo;
 import android.os.IBinder;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +20,7 @@ import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
 import com.eclubprague.iot.android.driothub.services.BuiltInSensorsProviderService;
 import com.eclubprague.iot.android.driothub.ui.BuiltInSensorsListViewAdapter;
 import com.eclubprague.iot.android.driothub.ui.SensorDialog;
+import com.eclubprague.iot.android.driothub.ui.SensorsTimerDialog;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
@@ -73,6 +76,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(false);
     }
 
     @Override
@@ -117,7 +122,7 @@ public class MainActivity extends ActionBarActivity {
                 unbindService(connection);
                 builtInSensorsProviderService.stopSelf();
             } catch (Exception e) {
-
+                Log.e("STOP",e.toString());
             }
             this.finish();
             return true;
@@ -128,7 +133,12 @@ public class MainActivity extends ActionBarActivity {
         }
 
         if(id == R.id.action_timer) {
-            Toast.makeText(this, "Set update interval for all sensors: not yet implemented", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Set update interval for all sensors: not yet implemented", Toast.LENGTH_SHORT).show();
+            try{
+                new SensorsTimerDialog(this, builtInSensorsProviderService.getBuiltInSensors());
+            }catch (Exception e) {
+                Log.e("SensorsTimer", e.toString());
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -148,11 +158,28 @@ public class MainActivity extends ActionBarActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                new SensorDialog(MainActivity.this,
-                        new WeakReference<>((Sensor) parent.getAdapter().getItem(position)));
+
+
+            /*ArrayList<Sensor> sensorRef = new ArrayList<>();
+            sensorRef.add((Sensor) parent.getAdapter().getItem(position));*/
                 //new BuiltInSensorInfoDialog(rootView.getContext(), (Sensor) parent.getAdapter().getItem(position));
+
+                new SensorDialog(MainActivity.this, /*sensorRef*/ (Sensor) parent.getAdapter().getItem(position));
             }
         });
     }
+
+    //----------------------------------------------------------------
+
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
+    }
+
+
 
 }

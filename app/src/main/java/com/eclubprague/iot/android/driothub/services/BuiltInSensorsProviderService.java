@@ -126,6 +126,15 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     }
 
     public void initService(String username, String password) {
+
+//        if(builtInSensors.size() > 0) {
+//            List<Sensor> tmp_sensors = getBuiltInSensors();
+//            for (int i = 0; i < tmp_sensors.size(); i++) {
+//                tmp_sensors.get(i).getTimer().stopTimerTask();
+//            }
+//            builtInSensors.clear();
+//        }
+
         USERNAME = username;
         PSSWD = password;
         USER = new User(USERNAME, PSSWD);
@@ -331,7 +340,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         deviceSensors = mSensorManager.getSensorList(android.hardware.Sensor.TYPE_ALL);
 
         builtInSensors.put(gpsKey, new GPS(Integer.toString(START_ID), "gps_secret_" + Integer.toString(START_ID), THISHUB));
-        builtInSensors.get(gpsKey).setTimer(USER, UUID, 5, new WeakReference<>(mConnection));
+        builtInSensors.get(gpsKey).setTimer(USER, UUID, 5, /*new WeakReference<>(mConnection)*/mConnection);
 
         for (int i = 0; i < deviceSensors.size(); i++) {
             android.hardware.Sensor sensor = deviceSensors.get(i);
@@ -394,7 +403,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                 default:
             }
             if(builtInSensors.get(sensor.getName()) != null) {
-                builtInSensors.get(sensor.getName()).setTimer(USER, UUID, 5, new WeakReference<>(mConnection));
+                builtInSensors.get(sensor.getName()).setTimer(USER, UUID, 5, /*new WeakReference<>(mConnection)*/mConnection);
             }
         }
     }

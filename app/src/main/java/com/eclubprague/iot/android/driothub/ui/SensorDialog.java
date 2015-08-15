@@ -16,6 +16,7 @@ import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 
 import java.lang.ref.WeakReference;
+//import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,31 +27,33 @@ import java.util.TimerTask;
 public class SensorDialog extends AlertDialog.Builder {
 
     private Context context;
-    private WeakReference<Sensor> sensorRef;
+    //private ArrayList<Sensor> sensorRef;
+    private Sensor sensor;
     private LinearLayout layout;
 
     private int progress;
 
-    public SensorDialog(Context context, final WeakReference<Sensor> sensorRef) {
+    public SensorDialog(Context context, /*final ArrayList<Sensor> sensorRef*/ Sensor sensor) {
         super(context);
         this.context = context;
-        this.sensorRef = new WeakReference<>(sensorRef.get());
+        //this.sensorRef = sensorRef;
+        this.sensor = sensor;
 
 
         layout = new LinearLayout(this.context);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-        for (int i = 0; i < this.sensorRef.get().getMeasured().size(); i++) {
+        for (int i = 0; i < /*this.sensorRef.get(0)*/this.sensor.getMeasured().size(); i++) {
             TextView tv = new TextView(this.context);
-            tv.setText(this.sensorRef.get().getMeasured().get(i).getName() + " : "
-                    + this.sensorRef.get().getMeasured().get(i).getValue());
+            tv.setText(/*this.sensorRef.get(0)*/this.sensor.getMeasured().get(i).getName() + " : "
+                    + this./*sensorRef.get(0)*/sensor.getMeasured().get(i).getValue());
             tv.setPadding(5, 5, 5, 5);
             layout.addView(tv);
         }
 
         SeekBar seekBar = new SeekBar(this.context);
         seekBar.setMax(10);
-        seekBar.setProgress(this.sensorRef.get().getSeconds());
+        seekBar.setProgress(this./*sensorRef.get(0)*/sensor.getSeconds());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
@@ -80,7 +83,7 @@ public class SensorDialog extends AlertDialog.Builder {
 
         this.setView(layout);
 
-        this.setTitle(this.sensorRef.get().getStringType());
+        this.setTitle(this./*sensorRef.get(0)*/sensor.getStringType());
         //this.setMessage(sensor.toString());
 
         this.setNegativeButton("Close", new DialogInterface.OnClickListener() {
@@ -93,8 +96,8 @@ public class SensorDialog extends AlertDialog.Builder {
         this.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 stopTimerTask();
-                sensorRef.get().setSeconds(progress);
-                sensorRef.get().getTimer().setPeriod(progress);
+                /*sensorRef.get(0)*/SensorDialog.this.sensor.setSeconds(progress);
+                /*sensorRef.get(0)*/SensorDialog.this.sensor.getTimer().setPeriod(progress);
                 /*Toast.makeText(SensorDialog.this.getContext(),
                         "Timer: " + Integer.toString(progress), Toast.LENGTH_SHORT).show();*/
                 dialog.dismiss();
@@ -145,11 +148,11 @@ public class SensorDialog extends AlertDialog.Builder {
                 handler.post(new Runnable() {
                     public void run() {
 
-                        for (int i = 0; i < SensorDialog.this.sensorRef.get().getMeasured().size(); i++) {
+                        for (int i = 0; i < SensorDialog.this./*sensorRef.get(0)*/sensor.getMeasured().size(); i++) {
                             ((TextView)(layout.getChildAt(i)))
-                                    .setText(SensorDialog.this.sensorRef.get().getMeasured().get(i).getName()
+                                    .setText(SensorDialog.this./*sensorRef.get(0)*/sensor.getMeasured().get(i).getName()
                                             + " : "
-                                            + SensorDialog.this.sensorRef.get().getMeasured().get(i).getValue());
+                                            + SensorDialog.this./*sensorRef.get(0)*/sensor.getMeasured().get(i).getValue());
                         }
 
                         layout.invalidate();

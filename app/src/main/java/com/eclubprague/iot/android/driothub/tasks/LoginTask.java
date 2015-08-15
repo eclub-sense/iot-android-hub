@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.eclubprague.iot.android.driothub.cloud.RegisteredSensors;
 import com.eclubprague.iot.android.driothub.cloud.user.User;
+import com.google.android.gms.gcm.Task;
 
 import org.restlet.data.ChallengeScheme;
 import org.restlet.resource.ClientResource;
@@ -20,10 +21,12 @@ public class LoginTask extends AsyncTask<User, Void, Boolean> {
         public void onLoginCompleted(boolean success);
     }
 
-    private WeakReference<TaskDelegate> delegateRef;
+    /*private WeakReference<TaskDelegate> delegateRef;*/
+    private TaskDelegate delegate;
 
     public LoginTask(TaskDelegate delegate) {
-        delegateRef = new WeakReference<TaskDelegate>(delegate);
+        //delegateRef = new WeakReference<TaskDelegate>(delegate);
+        this.delegate = delegate;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class LoginTask extends AsyncTask<User, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        delegateRef.get().onLoginCompleted(success);
+        /*delegateRef.get()*/delegate.onLoginCompleted(success);
     }
 }
 

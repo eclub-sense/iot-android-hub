@@ -1,6 +1,7 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
-import java.lang.ref.WeakReference;
+//import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +35,8 @@ public abstract class Sensor implements Identificable {
     protected transient int seconds = 5;
     /*@Expose (deserialize = false) protected int battery;
     @Expose (deserialize = false) protected String hubID;*/
-    protected transient WeakReference<Hub> hubRef;
+    //protected transient ArrayList<Hub> hubRef = new ArrayList<>();
+    protected transient Hub hub;
     protected transient byte reserved[] = new byte[3];
 
     protected transient List<DataNameValuePair> measured = new ArrayList<>();
@@ -49,8 +51,9 @@ public abstract class Sensor implements Identificable {
     }
 
     protected Sensor(String uuid, int type, String secret, Hub hub) {
-        this.hubRef = new WeakReference<Hub>(hub);
-        this.hub_uuid = hubRef.get().getUuid();
+        //this.hubRef.add(hub);
+        this.hub = hub;
+        this.hub_uuid = /*hubRef.get(0).getUuid()*/ hub.getUuid();
         this.uuid = uuid;
         this.type = Integer.toString(type);
         this.s_type = SensorType.getStringSensorType(type);
@@ -118,10 +121,12 @@ public abstract class Sensor implements Identificable {
         this.uuid = uuid;
     }
 
-    public void setTimer(User user, String hub_uuid, int seconds,
-                         WeakReference<WebSocketConnection> connectionRef) {
-        timer = new SensorDataSendingTimer(new WeakReference<>(this),
-                user, hub_uuid, seconds, new WeakReference<>(connectionRef.get()));
+    public void setTimer(User user, String hub_uuid, int seconds, WebSocketConnection webSocketConnection
+                         /*ArrayList<WebSocketConnection> connectionRef*/) {
+//        ArrayList<Sensor> sensorRef = new ArrayList<>();
+//        sensorRef.add(this);
+        timer = new SensorDataSendingTimer(this,
+                user, hub_uuid, seconds, webSocketConnection);
     }
 
     public void setSeconds(int seconds) {

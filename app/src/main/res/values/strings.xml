@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DrIoTHub</string>
+    <string name="app_name">AndroidHub</string>
 
     <string name="hello_world">Loading GPS data, please wait ... </string>
     <string name="action_settings">Settings</string>
