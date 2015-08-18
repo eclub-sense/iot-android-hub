@@ -25,16 +25,21 @@ public class SensorDataSendingTimer {
     private Sensor sensor;
     private User user;
     private int seconds = 5;
-    //private ArrayList<WebSocketConnection> connectionRef;
-    private WebSocketConnection connection;
+    private ArrayList<WebSocketConnection> connectionRef;
+    //private WebSocketConnection connection;
     private String hub_uuid;
 
     /*public ArrayList<WebSocketConnection> getConnectionRef() {
         return connectionRef;
     }*/
 
-    public WebSocketConnection getConnection() {
+    /*public WebSocketConnection getConnection() {
         return connection;
+    }*/
+
+
+    public ArrayList<WebSocketConnection> getConnectionRef() {
+        return connectionRef;
     }
 
     public String getHub_uuid() {
@@ -46,13 +51,13 @@ public class SensorDataSendingTimer {
     }
 
     public SensorDataSendingTimer(/*ArrayList<Sensor> sensorRef*/ Sensor sensor, User user, String hub_uuid,
-                                  int seconds, /*ArrayList<WebSocketConnection> connectionRef*/ WebSocketConnection connection) {
+                                  int seconds, ArrayList<WebSocketConnection> connectionRef/*WebSocketConnection connection*/) {
         //this.sensorRef = sensorRef;
         this.sensor = sensor;
         this.user = user;
         this.seconds = seconds;
-        //this.connectionRef = connectionRef;
-        this.connection = connection;
+        this.connectionRef = connectionRef;
+        //this.connection = connection;
         this.hub_uuid = hub_uuid;
         if(this.seconds != 0) {
             startTimer();
@@ -99,7 +104,8 @@ public class SensorDataSendingTimer {
                     public void run() {
 
                         //TODO SEND SENSOR DATA
-                        if (/*connectionRef.get()*/connection.isConnected()) {
+                        if (connectionRef != null && connectionRef.size() > 0 &&
+                                connectionRef.get(0)/*connection*/.isConnected()) {
 
                             List<Sensor> sensorList = new ArrayList<>();
                             sensorList.add(/*sensorRef.get()*/sensor);
@@ -107,7 +113,7 @@ public class SensorDataSendingTimer {
 
                             Log.e("WSDATA", data.toString());
 
-                            /*connectionRef.get()*/connection.sendTextMessage(data.toString());
+                            connectionRef.get(0)/*connection*/.sendTextMessage(data.toString());
                         }
 
                     }

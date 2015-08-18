@@ -180,7 +180,11 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                 stringToInt(android.os.Build.MODEL)*100;
 
         THISHUB = new Hub(UUID, USER);
+
         connectWebSocket(THISHUB);
+
+        mConnectionRef.add(mConnection);
+
         initBuiltInSensorsCollection();
     }
 
@@ -340,7 +344,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         deviceSensors = mSensorManager.getSensorList(android.hardware.Sensor.TYPE_ALL);
 
         builtInSensors.put(gpsKey, new GPS(Integer.toString(START_ID), "gps_secret_" + Integer.toString(START_ID), THISHUB));
-        builtInSensors.get(gpsKey).setTimer(USER, UUID, 5, /*new WeakReference<>(mConnection)*/mConnection);
+        builtInSensors.get(gpsKey).setTimer(USER, UUID, 5, /*new WeakReference<>(mConnection)*/mConnectionRef);
 
         for (int i = 0; i < deviceSensors.size(); i++) {
             android.hardware.Sensor sensor = deviceSensors.get(i);
@@ -403,7 +407,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                 default:
             }
             if(builtInSensors.get(sensor.getName()) != null) {
-                builtInSensors.get(sensor.getName()).setTimer(USER, UUID, 5, /*new WeakReference<>(mConnection)*/mConnection);
+                builtInSensors.get(sensor.getName()).setTimer(USER, UUID, 5, /*new WeakReference<>(mConnection)*/mConnectionRef);
             }
         }
     }
@@ -465,12 +469,15 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     private String PSSWD;
     private User USER;
     private final String WSURI = "ws://147.32.107.139:8080/events";
+    //private final String WSURI = "ws://192.168.200.19:9002/";
     //private final String WSURI = "ws://echo.websocket.org";
     private Hub THISHUB;
     private int START_ID;
 
     //A WebSocket to exchange data with cloud-side
     private WebSocketConnection mConnection;
+
+    private ArrayList<WebSocketConnection> mConnectionRef = new ArrayList<>();
 
     /**
      * Connect to cloud via websocket, including registering device as hub
@@ -549,7 +556,12 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                         //BuiltInSensorsProviderService.this.activityRef.get().actualizeListView(getBuiltInSensors());
 
                         //send updated data
-                        if(!mConnection.isConnected()) connectWebSocket(THISHUB);
+                        if(!mConnection.isConnected()) {
+                            Log.d("RECONNECT","reconnecting");
+                            connectWebSocket(THISHUB);
+                            mConnectionRef.clear();
+                            mConnectionRef.add(mConnection);
+                        }
 //                        if (mConnection.isConnected()) {
 //
 //                            WSDataWrapper data = new WSDataWrapper(getBuiltInSensors(), THISHUB.getUuid());

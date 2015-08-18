@@ -121,12 +121,12 @@ public abstract class Sensor implements Identificable {
         this.uuid = uuid;
     }
 
-    public void setTimer(User user, String hub_uuid, int seconds, WebSocketConnection webSocketConnection
-                         /*ArrayList<WebSocketConnection> connectionRef*/) {
+    public void setTimer(User user, String hub_uuid, int seconds, /*WebSocketConnection webSocketConnection*/
+                         ArrayList<WebSocketConnection> connectionRef) {
 //        ArrayList<Sensor> sensorRef = new ArrayList<>();
 //        sensorRef.add(this);
         timer = new SensorDataSendingTimer(this,
-                user, hub_uuid, seconds, webSocketConnection);
+                user, hub_uuid, seconds, connectionRef);
     }
 
     public void setSeconds(int seconds) {
