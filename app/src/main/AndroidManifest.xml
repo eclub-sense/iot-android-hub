@@ -39,11 +39,33 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.eclubprague.iot.android.driothub.LoginActivity" />
+            <data
+                android:host="gitkit"
+                android:scheme="com.googleusercontent.apps.461285059088-i70aaeitu76n4itao4n3umfgrvh957td" />
         </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="identitytoolkit.show_providers"
+            android:value="Google" />
+        <meta-data
+            android:name="identitytoolkit.use_google_plus"
+            android:value="false" />
+        <meta-data
+            android:name="identitytoolkit.api_key"
+            android:value="AIzaSyAtzlnFhkcz5leVH3QdtOxZQX1HYASqH1E" />
+        <meta-data
+            android:name="identitytoolkit.server_client_id"
+            android:value="461285059088-i70aaeitu76n4itao4n3umfgrvh957td.apps.googleusercontent.com" />
+        <meta-data
+            android:name="identitytoolkit.server_widget_url"
+            android:value="http://mlha-139.sin.cvut.cz:8080/callback" />
     </application>
 
 </manifest>

@@ -6,4 +6,5 @@
     <string name="action_get_current_gps">Show GPS</string>
     <string name="action_stop_service">Stop Service</string>
     <string name="action_register_sensors">Register Sensors</string>
+    <string name="sign_in_label">Sign in</string>
 </resources>
