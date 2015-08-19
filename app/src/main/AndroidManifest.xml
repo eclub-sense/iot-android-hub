@@ -56,7 +56,7 @@
             android:value="Google" />
         <meta-data
             android:name="identitytoolkit.use_google_plus"
-            android:value="false" />
+            android:value="true" />
         <meta-data
             android:name="identitytoolkit.api_key"
             android:value="AIzaSyAtzlnFhkcz5leVH3QdtOxZQX1HYASqH1E" />
