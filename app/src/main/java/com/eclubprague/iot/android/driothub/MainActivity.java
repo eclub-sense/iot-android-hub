@@ -37,9 +37,6 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
-    private String USERNAME = "DAT";
-    private String PASSWORD = "567";
-
     private BuiltInSensorsProviderService builtInSensorsProviderService;
 
     /** Defines callbacks for service binding, passed to bindService() */
@@ -60,8 +57,6 @@ public class MainActivity extends ActionBarActivity {
             */
             MainActivity.this.builtInSensorsProviderService = binder.getService();
             MainActivity.this.showSensors();
-
-            //set Service bounded to true
         }
 
         @Override
@@ -130,6 +125,10 @@ public class MainActivity extends ActionBarActivity {
 
         if(id == R.id.action_register_sensors) {
             builtInSensorsProviderService.registerSensors();
+        }
+
+        if(id == R.id.action_test) {
+            builtInSensorsProviderService.test();
         }
 
         if(id == R.id.action_timer) {

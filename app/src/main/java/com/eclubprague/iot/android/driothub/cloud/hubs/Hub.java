@@ -13,9 +13,8 @@ public class Hub implements Identificable {
     @SerializedName("@type") private String jsonType = "hub";*/
     protected String uuid;
     //@Expose (deserialize = false) protected String status = "connected";
-    protected String username;
-    protected String password;
-    protected String type = "LOGIN";
+    protected String email;
+    protected final String type = "LOGIN";
 
 
     private transient User user;
@@ -23,8 +22,7 @@ public class Hub implements Identificable {
     public Hub(String uuid, User user) {
         this.uuid = uuid;
         this.user = user;
-        this.username = user.getUsername();
-        this.password = user.getPassword();
+        this.email = user.getEmail();
     }
 
     @Override
@@ -43,14 +41,6 @@ public class Hub implements Identificable {
     public User getUser() {return user;}
 
     public String getType() {return type;}
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getUsername() {
-        return username;
-    }
 
     @Override
     public String toString() {

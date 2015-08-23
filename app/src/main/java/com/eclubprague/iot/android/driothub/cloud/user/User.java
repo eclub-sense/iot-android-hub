@@ -6,17 +6,15 @@ import com.google.gson.Gson;
  * Created by Dat on 3.8.2015.
  */
 public class User {
-    protected String username;
-    protected String password;
+    protected String email;
 
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public User(String email) {
+        this.email =email;
     }
 
-    public String getUsername() {return username;}
-
-    public String getPassword() {return password;}
+    public String getEmail() {
+        return email;
+    }
 
     @Override
     public String toString() {

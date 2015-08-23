@@ -7,4 +7,6 @@
     <string name="action_stop_service">Stop Service</string>
     <string name="action_register_sensors">Register Sensors</string>
     <string name="action_timer">Timer</string>
+    <string name="sign_in_label">Sign In</string>
+    <string name="action_test">Test</string>
 </resources>

@@ -35,8 +35,8 @@ public class LoginTask extends AsyncTask<User, Void, Boolean> {
         if(users.length == 0) return false;
         try {
             ClientResource cr = new ClientResource("http://147.32.107.139:8080/registered_sensors");
-            cr.setChallengeResponse(ChallengeScheme.HTTP_BASIC,
-                    users[0].getUsername(), users[0].getPassword());
+            //cr.setChallengeResponse(ChallengeScheme.HTTP_BASIC,
+             //       users[0].getUsername(), users[0].getPassword());
             RegisteredSensors sr = cr.wrap(RegisteredSensors.class);
             sr.getStringData();
         } catch (Exception e) {
