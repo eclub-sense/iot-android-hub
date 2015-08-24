@@ -48,7 +48,7 @@ public class ESCThermometer extends Sensor {
     }
 
     @Override
-    public List<DataNameValuePair> getDataList() {
+    public List<DataNameValuePair> getMeasured() {
         measured.clear();
         measured.add(new DataNameValuePair("temperature", Integer.toString(temperature)));
         measured.add(new DataNameValuePair("pressure", Integer.toString(pressure)));

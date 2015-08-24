@@ -47,7 +47,7 @@ public class ProximitySensor extends Sensor {
     }
 
     @Override
-    public List<DataNameValuePair> getDataList() {
+    public List<DataNameValuePair> getMeasured() {
         measured.clear();
         measured.add(new DataNameValuePair("proximity", Float.toString(proximity)));
         measured.add(new DataNameValuePair("unit", unit));

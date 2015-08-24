@@ -51,7 +51,7 @@ public class GPS  extends Sensor {
     }
 
     @Override
-    public List<DataNameValuePair> getDataList() {
+    public List<DataNameValuePair> getMeasured() {
         measured.clear();
         measured.add(new DataNameValuePair("latitude", Double.toString(latitude)));
         measured.add(new DataNameValuePair("longitude", Double.toString(longitude)));

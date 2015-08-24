@@ -13,6 +13,9 @@ public interface SensorRegistrator {
     @Get("json")
     public Sensor retrieve();
 
+    @Get("json")
+    public String retrieve_test();
+
     @Post("json")
     public void store(Sensor sensor);
 

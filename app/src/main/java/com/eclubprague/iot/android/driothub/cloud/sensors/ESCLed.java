@@ -56,12 +56,12 @@ public class ESCLed extends Sensor implements WriteableSensor {
     @Override
     public String toString() {
         return "ESCLed [led=" + led + ", uuid=" + uuid + ", type=" + type + ", secret=" + secret + ", incr=" + incr
-                + /*", battery=" + battery + ", hubID=" + hubID +*/ ", hub=" + hubRef.get() + ", reserved="
+                + /*", battery=" + battery + ", hubID=" + hubID +*/ ", hub=" + /*hubRef.get()*/hub + ", reserved="
                 + Arrays.toString(reserved) + "]";
     }
 
     @Override
-    public List<DataNameValuePair> getDataList() {
+    public List<DataNameValuePair> getMeasured() {
         measured.clear();
         return measured;
     }

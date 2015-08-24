@@ -6,31 +6,25 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import com.eclubprague.iot.android.driothub.cloud.user.User;
 import com.eclubprague.iot.android.driothub.services.BuiltInSensorsProviderService;
-import com.eclubprague.iot.android.driothub.tasks.LoginTask;
-import com.eclubprague.iot.android.driothub.tasks.RegisterTask;
-import com.eclubprague.iot.android.driothub.tasks.UserRegistrationTask;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.identitytoolkit.GitkitClient;
+import com.google.identitytoolkit.GitkitUser;
+import com.google.identitytoolkit.IdToken;
 
 /**
  * Created by Dat on 10.8.2015.
  */
-public class LoginActivity extends Activity implements LoginTask.TaskDelegate,
-        RegisterTask.TaskDelegate, UserRegistrationTask.TaskDelegate {
+public class LoginActivity extends Activity  {
 
-    private EditText un,pw;
-    private Button b_login;
-    private Button b_register;
+    private String token = "";
+    private String email = "";
 
-    private String username = "DAT";
-    private String password = "567";
-
-    private boolean loggedIn = false;
+    private GitkitClient client;
 
     private ServiceConnection connection = new ServiceConnection() {
 
@@ -39,7 +33,7 @@ public class LoginActivity extends Activity implements LoginTask.TaskDelegate,
                                        IBinder service) {
             BuiltInSensorsProviderService.BuiltInSensorsProviderBinder binder =
                     (BuiltInSensorsProviderService.BuiltInSensorsProviderBinder) service;
-            binder.getService().initService(username, password);
+            binder.getService().initService(token, email);
             LoginActivity.this.finish();
         }
 
@@ -53,99 +47,70 @@ public class LoginActivity extends Activity implements LoginTask.TaskDelegate,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(loggedIn) {
-            //TODO start settings activity
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            this.finish();
-            return;
-        }
         setContentView(R.layout.activity_login);
-        un=(EditText)findViewById(R.id.et_un);
-        pw=(EditText)findViewById(R.id.et_pw);
-        b_login =(Button)findViewById(R.id.btn_login);
-        b_register =(Button)findViewById(R.id.btn_register);
 
-        b_login.setOnClickListener(new View.OnClickListener() {
+        client = GitkitClient.newBuilder(this, new GitkitClient.SignInCallbacks() {
 
             @Override
-            public void onClick(View v) {
-                username = un.getText().toString();
-                password = pw.getText().toString();
+            public void onSignIn(IdToken idToken, GitkitUser user) {
+                Log.i("LoginActivity", "Logged in as " + user.getDisplayName());
+                token = idToken.getTokenString();
+                Log.i("TOKEN", token);
+                email = idToken.getEmail();
+                Log.i("EMAIL", email);
 
-                if(username.length() < 3 || password.length() < 3) {
-                    Toast.makeText(LoginActivity.this, "Credentials min. lenght: 3", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                new LoginTask(LoginActivity.this).execute(new User(username, password));
+                startService();
             }
-        });
-
-        b_register.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Not yet supported", Toast.LENGTH_SHORT).show();
-                /*username = un.getText().toString();
-                password = pw.getText().toString();
-
-                if(username.length() < 3 || password.length() < 3) {
-                    Toast.makeText(LoginActivity.this, "Credentials min. lenght: 3", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                new RegisterTask(LoginActivity.this).execute(new User(username, password));*/
+            public void onSignInFailed() {
+                Toast.makeText(LoginActivity.this, "SIGN IN FAILED", Toast.LENGTH_SHORT).show();
+                return;
             }
-        });
+        }).build();
+
     }
 
-
-
-
-
-
-    //-------------------------------------------------------------------
-    //Task Delegates Overrides
-    //-------------------------------------------------------------------
-
-
-    @Override
-    public void onLoginCompleted(boolean success) {
-        if(!success) {
-            Toast.makeText(this, "No such account", Toast.LENGTH_SHORT).show();
-            return;
+    public void signInWithGit(View view) {
+        if (view.getId() == R.id.sign_in) {
+            client.startSignIn();
         }
-        startService();
     }
 
     @Override
-    public void onRegisterCompleted(boolean success) {
-        if(!success) {
-            Toast.makeText(LoginActivity.this, "Such account already exists", Toast.LENGTH_SHORT).show();
-            return;
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (!client.handleActivityResult(requestCode, resultCode, intent)) {
+            super.onActivityResult(requestCode, resultCode, intent);
         }
-        new UserRegistrationTask(this).execute(new User(username, password));
+
+
     }
 
     @Override
-    public void onUserRegistrationTaskCompleted(boolean success) {
-        if(!success) {
-            Toast.makeText(LoginActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
-            return;
+    protected void onNewIntent(Intent intent) {
+        if (!client.handleIntent(intent)) {
+            super.onNewIntent(intent);
         }
-        startService();
     }
-
 
     private void startService() {
         //TODO start service
         Intent intent = new Intent(this, BuiltInSensorsProviderService.class);
+        intent.putExtra("token", token);
+        intent.putExtra("email", email);
         startService(intent);
         bindService(intent, connection, android.content.Context.BIND_AUTO_CREATE);
         //TODO start Settings Activity
         Intent intent2 = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent2);
-        loggedIn = true;
+        //this.finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
     }
 }

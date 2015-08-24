@@ -46,7 +46,7 @@ public class HumiditySensor extends Sensor {
     }
 
     @Override
-    public List<DataNameValuePair> getDataList() {
+    public List<DataNameValuePair> getMeasured() {
         measured.clear();
         measured.add(new DataNameValuePair("humidity", Float.toString(humidity)));
         measured.add(new DataNameValuePair("unit", unit));

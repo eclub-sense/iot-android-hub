@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.eclubprague.iot.android.driothub.cloud.RegisteredSensors;
 import com.eclubprague.iot.android.driothub.cloud.user.User;
+import com.google.android.gms.gcm.Task;
 
 import org.restlet.data.ChallengeScheme;
 import org.restlet.resource.ClientResource;
@@ -20,10 +21,12 @@ public class LoginTask extends AsyncTask<User, Void, Boolean> {
         public void onLoginCompleted(boolean success);
     }
 
-    private WeakReference<TaskDelegate> delegateRef;
+    /*private WeakReference<TaskDelegate> delegateRef;*/
+    private TaskDelegate delegate;
 
     public LoginTask(TaskDelegate delegate) {
-        delegateRef = new WeakReference<TaskDelegate>(delegate);
+        //delegateRef = new WeakReference<TaskDelegate>(delegate);
+        this.delegate = delegate;
     }
 
     @Override
@@ -32,8 +35,8 @@ public class LoginTask extends AsyncTask<User, Void, Boolean> {
         if(users.length == 0) return false;
         try {
             ClientResource cr = new ClientResource("http://147.32.107.139:8080/registered_sensors");
-            cr.setChallengeResponse(ChallengeScheme.HTTP_BASIC,
-                    users[0].getUsername(), users[0].getPassword());
+            //cr.setChallengeResponse(ChallengeScheme.HTTP_BASIC,
+             //       users[0].getUsername(), users[0].getPassword());
             RegisteredSensors sr = cr.wrap(RegisteredSensors.class);
             sr.getStringData();
         } catch (Exception e) {
@@ -45,7 +48,7 @@ public class LoginTask extends AsyncTask<User, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        delegateRef.get().onLoginCompleted(success);
+        /*delegateRef.get()*/delegate.onLoginCompleted(success);
     }
 }
 

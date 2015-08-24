@@ -2,21 +2,31 @@ package com.eclubprague.iot.android.driothub;
 
 import android.app.Activity;
 import android.content.*;
+import android.content.pm.ActivityInfo;
 import android.os.IBinder;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
 import com.eclubprague.iot.android.driothub.services.BuiltInSensorsProviderService;
 import com.eclubprague.iot.android.driothub.ui.BuiltInSensorsListViewAdapter;
+import com.eclubprague.iot.android.driothub.ui.SensorDialog;
+import com.eclubprague.iot.android.driothub.ui.SensorsTimerDialog;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -26,9 +36,6 @@ import java.util.List;
 */
 
 public class MainActivity extends ActionBarActivity {
-
-    private String USERNAME = "DAT";
-    private String PASSWORD = "567";
 
     private BuiltInSensorsProviderService builtInSensorsProviderService;
 
@@ -49,8 +56,7 @@ public class MainActivity extends ActionBarActivity {
             * in the end.
             */
             MainActivity.this.builtInSensorsProviderService = binder.getService();
-
-            //set Service bounded to true
+            MainActivity.this.showSensors();
         }
 
         @Override
@@ -64,6 +70,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(false);
     }
 
     @Override
@@ -104,7 +113,13 @@ public class MainActivity extends ActionBarActivity {
         }
 
         if(id == R.id.action_stop_service) {
-            builtInSensorsProviderService.stopSelf();
+            try {
+                unbindService(connection);
+                builtInSensorsProviderService.stopSelf();
+            } catch (Exception e) {
+                Log.e("STOP",e.toString());
+            }
+            this.finish();
             return true;
         }
 
@@ -112,7 +127,58 @@ public class MainActivity extends ActionBarActivity {
             builtInSensorsProviderService.registerSensors();
         }
 
+        if(id == R.id.action_test) {
+            builtInSensorsProviderService.test();
+        }
+
+        if(id == R.id.action_timer) {
+            //Toast.makeText(this, "Set update interval for all sensors: not yet implemented", Toast.LENGTH_SHORT).show();
+            try{
+                new SensorsTimerDialog(this, builtInSensorsProviderService.getBuiltInSensors());
+            }catch (Exception e) {
+                Log.e("SensorsTimer", e.toString());
+            }
+        }
+
         return super.onOptionsItemSelected(item);
     }
+
+    //----------------------------------------------------------------
+
+    private ListView listView;
+
+    private void showSensors() {
+        listView = (ListView)findViewById(R.id.builtins_list);
+        BuiltInSensorsListViewAdapter adapter = new BuiltInSensorsListViewAdapter(
+                this, android.R.layout.simple_list_item_1, builtInSensorsProviderService.getBuiltInSensors()
+        );
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+            /*ArrayList<Sensor> sensorRef = new ArrayList<>();
+            sensorRef.add((Sensor) parent.getAdapter().getItem(position));*/
+                //new BuiltInSensorInfoDialog(rootView.getContext(), (Sensor) parent.getAdapter().getItem(position));
+
+                new SensorDialog(MainActivity.this, /*sensorRef*/ (Sensor) parent.getAdapter().getItem(position));
+            }
+        });
+    }
+
+    //----------------------------------------------------------------
+
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.addCategory(Intent.CATEGORY_HOME);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(setIntent);
+    }
+
+
 
 }

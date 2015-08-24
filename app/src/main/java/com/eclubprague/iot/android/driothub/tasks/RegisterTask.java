@@ -20,10 +20,12 @@ public class RegisterTask extends AsyncTask<User, Void, Boolean> {
         public void onRegisterCompleted(boolean success);
     }
 
-    private WeakReference<TaskDelegate> delegateRef;
+    //private WeakReference<TaskDelegate> delegateRef;
+    private TaskDelegate delegate;
 
     public RegisterTask(TaskDelegate delegate) {
-        delegateRef = new WeakReference<TaskDelegate>(delegate);
+        //delegateRef = new WeakReference<TaskDelegate>(delegate);
+        this.delegate = delegate;
     }
 
     @Override
@@ -32,8 +34,8 @@ public class RegisterTask extends AsyncTask<User, Void, Boolean> {
         if(users.length == 0) return false;
         try {
             ClientResource cr = new ClientResource("http://147.32.107.139:8080/registered_sensors");
-            cr.setChallengeResponse(ChallengeScheme.HTTP_BASIC,
-                    users[0].getUsername(), users[0].getPassword());
+            //cr.setChallengeResponse(ChallengeScheme.HTTP_BASIC,
+                    //users[0].getUsername(), users[0].getPassword());
             RegisteredSensors sr = cr.wrap(RegisteredSensors.class);
             sr.getStringData();
         } catch (Exception e) {
@@ -45,7 +47,7 @@ public class RegisterTask extends AsyncTask<User, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        delegateRef.get().onRegisterCompleted(success);
+        /*delegateRef.get()*/delegate.onRegisterCompleted(success);
     }
 }
 

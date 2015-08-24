@@ -43,7 +43,7 @@ public class AmbientThermometer extends Sensor {
     }
 
     @Override
-    public List<DataNameValuePair> getDataList() {
+    public List<DataNameValuePair> getMeasured() {
         measured.clear();
         measured.add(new DataNameValuePair("temperature", Float.toString(temperature)));
         measured.add(new DataNameValuePair("unit", unit));

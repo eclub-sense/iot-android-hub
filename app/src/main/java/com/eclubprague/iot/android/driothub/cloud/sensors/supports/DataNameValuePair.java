@@ -15,6 +15,14 @@ public class DataNameValuePair {
         this.value = value;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
     @Override
     public String toString() {
         return new Gson().toJson(this);

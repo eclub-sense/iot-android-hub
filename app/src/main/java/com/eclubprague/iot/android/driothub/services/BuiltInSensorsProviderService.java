@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ import com.eclubprague.iot.android.driothub.cloud.sensors.ProximitySensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
 import com.eclubprague.iot.android.driothub.cloud.user.User;
 import com.eclubprague.iot.android.driothub.tasks.SensorRegistrationTask;
+import com.eclubprague.iot.android.driothub.tasks.TestingTask;
 import com.eclubprague.iot.android.driothub.tasks.UserRegistrationTask;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -74,6 +76,9 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     //Binder for Service to communicate with UI thread
     private final IBinder binder = new BuiltInSensorsProviderBinder();
 
+    private String token = "";
+    private String email = "";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -99,20 +104,12 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     @Override
     public boolean onUnbind(Intent intent) {
-        /*stopLocationUpdates();
-        mSensorManager.unregisterListener(this);
-        stopTimerTask();
-        try {
-            mConnection.disconnect();
-        } catch (Exception e) {
-            Log.e("onDisconnect", e.toString());
-        }*/
         return super.onUnbind(intent);
     }
 
     @Override
     public void onDestroy() {
-
+        //might go to onUnbind
         stopLocationUpdates();
         mSensorManager.unregisterListener(this);
         stopTimerTask();
@@ -125,13 +122,31 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         super.onDestroy();
     }
 
-    public void initService(String username, String password) {
-        USERNAME = username;
-        PSSWD = password;
-        USER = new User(USERNAME, PSSWD);
 
-        int uuid = stringToInt(USERNAME) * stringToInt(PSSWD) * 777 +
-                stringToInt(android.os.Build.MODEL);
+
+    public void initService(String token, String email) {
+
+//        if(builtInSensors.size() > 0) {
+//            List<Sensor> tmp_sensors = getBuiltInSensors();
+//            for (int i = 0; i < tmp_sensors.size(); i++) {
+//                tmp_sensors.get(i).getTimer().stopTimerTask();
+//            }
+//            builtInSensors.clear();
+//        }
+        this.token = token;
+        this.email = email;
+        Log.e("O_TOKEN", token);
+        Log.e("O_EMAIL", email);
+
+
+        USER = new User(email);
+
+        String android_id = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+
+        int uuid = stringToInt(email)  * (stringToInt(android_id)%567 + 1) +
+                stringToInt(android.os.Build.MODEL)*(stringToInt(android_id)%9 + 1);
+        if(uuid < 0) uuid *= -1;
 
         UUID = Integer.toString(uuid);
 
@@ -164,15 +179,15 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         }*/
 
 
-        START_ID = Integer.parseInt(UUID) +
-                stringToInt(android.os.Build.MODEL)*100;
+        START_ID = uuid + stringToInt(android_id);
 
         THISHUB = new Hub(UUID, USER);
 
+        connectWebSocket(THISHUB);
+
+        mConnectionRef.add(mConnection);
 
         initBuiltInSensorsCollection();
-
-        connectWebSocket(THISHUB);
     }
 
     private int stringToInt(String param) {
@@ -183,10 +198,10 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         return sum;
     }
 
-    private int getRandomInt(int lowerBound, int upperBound) {
+    /*private int getRandomInt(int lowerBound, int upperBound) {
         Random r = new Random();
         return r.nextInt(upperBound - lowerBound) + lowerBound;
-    }
+    }*/
 
 
     /**
@@ -324,13 +339,16 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     private HashMap<String, Sensor> builtInSensors = new HashMap<>();
 
-    private String gpsKey = "GPS_" + Build.MODEL;
+    private String gpsKey;
 
     public void initBuiltInSensorsCollection() {
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         deviceSensors = mSensorManager.getSensorList(android.hardware.Sensor.TYPE_ALL);
 
+        gpsKey = "GPS_" + email;
+
         builtInSensors.put(gpsKey, new GPS(Integer.toString(START_ID), "gps_secret_" + Integer.toString(START_ID), THISHUB));
+        builtInSensors.get(gpsKey).setTimer(USER, UUID, 5, mConnectionRef);
 
         for (int i = 0; i < deviceSensors.size(); i++) {
             android.hardware.Sensor sensor = deviceSensors.get(i);
@@ -392,6 +410,9 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                     break;
                 default:
             }
+            if(builtInSensors.get(sensor.getName()) != null) {
+                builtInSensors.get(sensor.getName()).setTimer(USER, UUID, 5, mConnectionRef);
+            }
         }
     }
 
@@ -427,10 +448,18 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         List<Sensor> sensors = getBuiltInSensors();
         for (int i = 0; i < sensors.size(); i++) {
             Log.d("SensorReg", sensors.get(i).toString());
-            new SensorRegistrationTask(USER).execute(sensors.get(i));
+            if(Integer.parseInt(sensors.get(i).getType()) == SensorType.GPS) {
+                new SensorRegistrationTask(token, email).execute(sensors.get(i));
+                //new TestingTask().execute(token);
+                break;
+            }
         }
 
-        if(!mConnection.isConnected()) connectWebSocket(THISHUB);
+        //if(!mConnection.isConnected()) connectWebSocket(THISHUB);
+    }
+
+    public void test() {
+        new TestingTask().execute(token);
     }
 
     //----------------------------------------------------------------
@@ -448,16 +477,18 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     */
 
     private String UUID;
-    private String USERNAME;
-    private String PSSWD;
     private User USER;
-    private final String WSURI = "ws://147.32.107.139:8080/events";
+    //private final String WSURI = "ws://147.32.107.139:8080/events";
+    private final String WSURI = "ws://147.32.107.139:1337";
+    //private final String WSURI = "ws://192.168.200.19:9002/";
     //private final String WSURI = "ws://echo.websocket.org";
     private Hub THISHUB;
     private int START_ID;
 
     //A WebSocket to exchange data with cloud-side
     private WebSocketConnection mConnection;
+
+    private ArrayList<WebSocketConnection> mConnectionRef = new ArrayList<>();
 
     /**
      * Connect to cloud via websocket, including registering device as hub
@@ -474,17 +505,19 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                 public void onOpen() {
                     Log.d("WonOpen", "Status: Connected to " + WSURI);
                     mConnection.sendTextMessage(hub.toString());
+                    Log.d("OpenMessage", hub.toString());
                 }
 
                 @Override
                 public void onTextMessage(String payload) {
-                    Log.d("WonMessage", "Got echo: " + payload);
-                    if (payload.contains("LOGIN_ACK")) {
+                    Log.d("WonMessage", payload);
+                    /*if (payload.contains("LOGIN_ACK")) {
                         if (!sensorsRegistered) {
                             //registerSensors();
                         }
                         startTimer();
-                    }
+                    }*/
+                    startTimer();
                 }
 
                 @Override
@@ -515,7 +548,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         timer = new Timer();
         //initialize the TimerTask's job
         initializeTimerTask();
-        //schedule the timer, after the first 5000ms the TimerTask will run every 10000ms
+        //schedule the timer, after the first 10000ms the TimerTask will run every 5000ms
         timer.schedule(timerTask, 10000, 5000); //
     }
 
@@ -536,14 +569,20 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                         //BuiltInSensorsProviderService.this.activityRef.get().actualizeListView(getBuiltInSensors());
 
                         //send updated data
-                        if (mConnection.isConnected()) {
-
-                            WSDataWrapper data = new WSDataWrapper(getBuiltInSensors(), THISHUB.getUuid());
-
-                            Log.e("WSDATA", data.toString());
-
-                            mConnection.sendTextMessage(data.toString());
+                        if(!mConnection.isConnected()) {
+                            Log.d("RECONNECT","reconnecting");
+                            connectWebSocket(THISHUB);
+                            mConnectionRef.clear();
+                            mConnectionRef.add(mConnection);
                         }
+//                        if (mConnection.isConnected()) {
+//
+//                            WSDataWrapper data = new WSDataWrapper(getBuiltInSensors(), THISHUB.getUuid());
+//
+//                            Log.e("WSDATA", data.toString());
+//
+//                            mConnection.sendTextMessage(data.toString());
+//                        }
                     }
                 });
             }
