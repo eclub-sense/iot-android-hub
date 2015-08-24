@@ -448,7 +448,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         List<Sensor> sensors = getBuiltInSensors();
         for (int i = 0; i < sensors.size(); i++) {
             Log.d("SensorReg", sensors.get(i).toString());
-            if(Integer.parseInt(sensors.get(i).getType()) == SensorType.GPS) {
+            if(Integer.parseInt(sensors.get(i).getType()) == SensorType.LIGHT) {
                 new SensorRegistrationTask(token, email).execute(sensors.get(i));
                 //new TestingTask().execute(token);
                 break;

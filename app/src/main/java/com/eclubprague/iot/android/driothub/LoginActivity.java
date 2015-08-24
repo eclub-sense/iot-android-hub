@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.eclubprague.iot.android.driothub.services.BuiltInSensorsProviderService;
+import com.eclubprague.iot.android.driothub.tasks.LoginTask;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.identitytoolkit.GitkitClient;
 import com.google.identitytoolkit.GitkitUser;
@@ -19,7 +20,7 @@ import com.google.identitytoolkit.IdToken;
 /**
  * Created by Dat on 10.8.2015.
  */
-public class LoginActivity extends Activity  {
+public class LoginActivity extends Activity implements LoginTask.TaskDelegate {
 
     private String token = "";
     private String email = "";
@@ -59,7 +60,7 @@ public class LoginActivity extends Activity  {
                 email = idToken.getEmail();
                 Log.i("EMAIL", email);
 
-                startService();
+                new LoginTask(LoginActivity.this).execute(email);
             }
 
             @Override
@@ -103,7 +104,7 @@ public class LoginActivity extends Activity  {
         //TODO start Settings Activity
         Intent intent2 = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent2);
-        //this.finish();
+        this.finish();
     }
 
     @Override
@@ -112,5 +113,12 @@ public class LoginActivity extends Activity  {
         setIntent.addCategory(Intent.CATEGORY_HOME);
         setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(setIntent);
+    }
+
+    @Override
+    public void onLoginCompleted(String token) {
+        this.token = token;
+        Log.e("NEWTOKEN", token);
+        startService();
     }
 }
