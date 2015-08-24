@@ -28,27 +28,12 @@ public class SensorRegistrationTask extends AsyncTask<Sensor, Void, Void> {
     @Override
     protected Void doInBackground(Sensor... sensors) {
         try {
-            byte[] valueDecoded= Base64.decodeBase64(token.getBytes());
-
-            String tokenString = new String(valueDecoded, "UTF-8");
 
             Log.e("TOKEN", token);
-            Log.e("TOKENSTRING", tokenString);
-
-            //ClientResource cr = new ClientResource("http://147.32.107.139:8080/sensor_registration?access_token="
-            //+ token);
             ClientResource resource = new ClientResource("http://147.32.107.139:8080/sensor_registration");
-
-            //ChallengeResponse response = new ChallengeResponse(ChallengeScheme.HTTP_OAUTH_BEARER);
-            //response.setIdentifier(email);
-            //response.setRawValue(token);
-
-            //cr.setChallengeResponse(ChallengeScheme.HTTP_OAUTH_BEARER, email, null);
-            //resource.setChallengeResponse(response);
             resource.setQueryValue("id_token", token);
 
             SensorRegistrator sr = resource.wrap(SensorRegistrator.class);
-            //Log.e("LOG",sr.retrieve_test());
             sr.store(sensors[0]);
         } catch (Exception e) {
             Log.e("SensorReg", e.toString());
