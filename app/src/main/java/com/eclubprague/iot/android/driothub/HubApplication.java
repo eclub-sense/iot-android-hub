@@ -13,10 +13,14 @@ import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
+import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 import org.altbeacon.beacon.startup.BootstrapNotifier;
 import org.altbeacon.beacon.startup.RegionBootstrap;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by paulos on 27. 8. 2015.
@@ -24,11 +28,18 @@ import java.util.Collection;
 public class HubApplication extends Application implements BootstrapNotifier, RangeNotifier {
     private static final String TAG = ".HubApplication";
     private RegionBootstrap regionBootstrap;
+    private BackgroundPowerSaver backgroundPowerSaver;
+
+    private Set<Beacon> detectedBeacons = new HashSet<>();
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "App started up");
+
+        // Simply constructing this class and holding a reference to it in your custom Application class
+        // enables auto battery saving of about 60%
+        backgroundPowerSaver = new BackgroundPowerSaver(this);
 
         buildOngoingNotification();
 
@@ -40,20 +51,20 @@ public class HubApplication extends Application implements BootstrapNotifier, Ra
                 .setBeaconLayout("s:0-1=feaa,m:2-2=00,p:3-3:-41,i:4-13,i:14-19"));
 
         beaconManager.setRangeNotifier(this);
-        beaconManager.setForegroundScanPeriod(5000);
         beaconManager.setBackgroundScanPeriod(5000);
         beaconManager.setBackgroundBetweenScanPeriod(3000);
-        beaconManager.setForegroundBetweenScanPeriod(3000);
 
+        // wake up the app when any beacon is seen (we can specify specific id filers in the parameters below)
         Region region = new Region("com.eclubprague.iot.android.driothub.boostrapRegion", null, null, null);
         regionBootstrap = new RegionBootstrap(this, region);
     }
 
     @Override
     public void didEnterRegion(Region region) {
-        // wake up the app when any beacon is seen (you can specify specific id filers in the parameters below)
+        Log.d(TAG, "Got a didEnterRegion call");
         try {
-            BeaconManager.getInstanceForApplication(this).startRangingBeaconsInRegion(region);
+            Region region2 = new Region("com.eclubprague.iot.android.driothub.boostrapRegion", null, null, null);
+            BeaconManager.getInstanceForApplication(this).startRangingBeaconsInRegion(region2);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -76,11 +87,13 @@ public class HubApplication extends Application implements BootstrapNotifier, Ra
     @Override
     public void didRangeBeaconsInRegion(Collection<Beacon> collection, Region region) {
         Log.d(TAG, "Got a didRangeBeaconsInRegion call");
+        detectedBeacons.clear();
         for(Beacon beacon : collection) {
             Log.d(TAG, "Beacon in range: " + beacon.getBluetoothAddress() + ", " + beacon.getId1() + "," + beacon.getId2());
+            detectedBeacons.add(beacon);
         }
 
-        modifyNotificationForBeacons(collection);
+        modifyNotificationForBeacons(detectedBeacons);
     }
 
     @Override
@@ -103,7 +116,7 @@ public class HubApplication extends Application implements BootstrapNotifier, Ra
     public void modifyNotificationForBeacons(Collection<Beacon> beacons) {
         StringBuilder sb = new StringBuilder();
         for(Beacon b : beacons) {
-            sb.append(Double.toString(b.getDistance()) + "m - " + b.getBluetoothAddress() + "\n");
+            sb.append(String.format("%.2f m - %s%n", b.getDistance(), b.getBluetoothAddress()));
         }
 
         Notification notification = new Notification.Builder(this)
