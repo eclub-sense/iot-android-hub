@@ -28,6 +28,7 @@ android {
 }
 
 repositories {
+    jcenter()
     mavenCentral()
     maven { url 'http://maven.restlet.org' }
     flatDir {
@@ -47,6 +48,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.google.android.gms:play-services:7.5.0'
     compile 'commons-codec:commons-codec:1.10'
+
+    compile 'org.altbeacon:android-beacon-library:2+'
 
     compile(name:'identitytoolkit-api11', ext:'aar')
 }
