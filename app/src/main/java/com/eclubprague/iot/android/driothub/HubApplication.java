@@ -55,15 +55,19 @@ public class HubApplication extends Application implements BootstrapNotifier, Ra
         beaconManager.setBackgroundBetweenScanPeriod(3000);
 
         // wake up the app when any beacon is seen (we can specify specific id filers in the parameters below)
-        Region region = new Region("com.eclubprague.iot.android.driothub.boostrapRegion", null, null, null);
+        Region region = new Region("driothub.boostrapRegion", null, null, null);
         regionBootstrap = new RegionBootstrap(this, region);
+
+        Log.d(TAG, "Started monitoring for target region");
     }
+
+
 
     @Override
     public void didEnterRegion(Region region) {
         Log.d(TAG, "Got a didEnterRegion call");
         try {
-            Region region2 = new Region("com.eclubprague.iot.android.driothub.boostrapRegion", null, null, null);
+            Region region2 = new Region(region.getUniqueId(), region.getId1(), region.getId2(), region.getId3());
             BeaconManager.getInstanceForApplication(this).startRangingBeaconsInRegion(region2);
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -72,8 +76,10 @@ public class HubApplication extends Application implements BootstrapNotifier, Ra
 
     @Override
     public void didExitRegion(Region region) {
+        Log.d(TAG, "Got a didExitRegion call");
         try {
-            BeaconManager.getInstanceForApplication(this).stopRangingBeaconsInRegion(region);
+            BeaconManager.getInstanceForApplication(this)
+                    .stopRangingBeaconsInRegion(new Region(region.getUniqueId(), region.getId1(), region.getId2(), region.getId3()));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -117,6 +123,9 @@ public class HubApplication extends Application implements BootstrapNotifier, Ra
         StringBuilder sb = new StringBuilder();
         for(Beacon b : beacons) {
             sb.append(String.format("%.2f m - %s%n", b.getDistance(), b.getBluetoothAddress()));
+        }
+        if(sb.toString().isEmpty()){
+            sb.append("No beacons in range");
         }
 
         Notification notification = new Notification.Builder(this)
