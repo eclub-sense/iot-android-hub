@@ -18,8 +18,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.eclubprague.iot.android.driothub.LoginActivity;
-import com.eclubprague.iot.android.driothub.MainActivity;
 import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.cloud.sensors.AmbientThermometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Barometer;
