@@ -39,6 +39,9 @@ public class MainActivity extends ActionBarActivity {
 
     private BuiltInSensorsProviderService builtInSensorsProviderService;
 
+    private String email;
+    private String accessToken;
+
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection connection = new ServiceConnection() {
 
@@ -48,6 +51,8 @@ public class MainActivity extends ActionBarActivity {
             // We've bound to Service, cast the IBinder and get Service instance
             BuiltInSensorsProviderService.BuiltInSensorsProviderBinder binder =
                     (BuiltInSensorsProviderService.BuiltInSensorsProviderBinder) service;
+
+            binder.getService().initService(accessToken, email);
 
             /*
             * Pass this MainActivity instance to Service as reference so that the Service
@@ -73,6 +78,9 @@ public class MainActivity extends ActionBarActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(false);
+
+        this.accessToken = this.getIntent().getStringExtra("token");
+        this.email = this.getIntent().getStringExtra("email");
     }
 
     @Override
@@ -80,7 +88,10 @@ public class MainActivity extends ActionBarActivity {
         super.onStart();
         // Bind to the Service
         Intent intent = new Intent(this, BuiltInSensorsProviderService.class);
+        intent.putExtra("token", accessToken);
+        intent.putExtra("email", email);
         bindService(intent, connection, android.content.Context.BIND_AUTO_CREATE);
+        startService(intent);
     }
 
     @Override
