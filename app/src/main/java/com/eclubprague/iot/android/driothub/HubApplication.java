@@ -43,6 +43,8 @@ public class HubApplication extends Application implements BootstrapNotifier, Ra
 
         buildOngoingNotification();
 
+
+
         BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
         // To detect proprietary beacons, you must add a line like below corresponding to your beacon
         // type.  Do a web search for "setBeaconLayout" to get the proper expression.
@@ -50,13 +52,12 @@ public class HubApplication extends Application implements BootstrapNotifier, Ra
         beaconManager.getBeaconParsers().add(new BeaconParser()
                 .setBeaconLayout("s:0-1=feaa,m:2-2=00,p:3-3:-41,i:4-13,i:14-19"));
 
-        beaconManager.setRangeNotifier(this);
-        beaconManager.setBackgroundScanPeriod(5000);
-        beaconManager.setBackgroundBetweenScanPeriod(3000);
-
         // wake up the app when any beacon is seen (we can specify specific id filers in the parameters below)
         Region region = new Region("driothub.boostrapRegion", null, null, null);
         regionBootstrap = new RegionBootstrap(this, region);
+
+        beaconManager.setBackgroundScanPeriod(5000);
+        beaconManager.setBackgroundBetweenScanPeriod(15000);
 
         Log.d(TAG, "Started monitoring for target region");
     }
@@ -66,23 +67,12 @@ public class HubApplication extends Application implements BootstrapNotifier, Ra
     @Override
     public void didEnterRegion(Region region) {
         Log.d(TAG, "Got a didEnterRegion call");
-        try {
-            Region region2 = new Region(region.getUniqueId(), region.getId1(), region.getId2(), region.getId3());
-            BeaconManager.getInstanceForApplication(this).startRangingBeaconsInRegion(region2);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void didExitRegion(Region region) {
         Log.d(TAG, "Got a didExitRegion call");
-        try {
-            BeaconManager.getInstanceForApplication(this)
-                    .stopRangingBeaconsInRegion(new Region(region.getUniqueId(), region.getId1(), region.getId2(), region.getId3()));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override

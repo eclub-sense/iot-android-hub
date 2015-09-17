@@ -3,7 +3,8 @@ package com.eclubprague.iot.android.driothub.tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.eclubprague.iot.android.driothub.cloud.NewTokenByRegisterJson;
+
+import com.eclubprague.iot.android.driothub.cloud.NewTokenJson;
 import com.eclubprague.iot.android.driothub.cloud.TokenWrapper;
 import com.eclubprague.iot.android.driothub.cloud.UserRegistrator;
 
@@ -12,34 +13,38 @@ import org.restlet.resource.ClientResource;
 /**
  * Created by Dat on 31.8.2015.
  */
-public class UserRegistrationTask extends AsyncTask<String, Void, TokenWrapper> {
+public class RetrieveTokenTask extends AsyncTask<String, Void, TokenWrapper> {
 
     public interface TaskDelegate {
-        public void onUserRetrieveTokenTaskCompleted(TokenWrapper token);
+        public void onRetrieveTokenTaskCompleted(TokenWrapper token);
     }
 
     private TaskDelegate delegate;
 
-    public UserRegistrationTask(TaskDelegate delegate) {
+    public RetrieveTokenTask(TaskDelegate delegate) {
         this.delegate = delegate;
     }
 
     @Override
-    protected TokenWrapper doInBackground(String ... params) {
+    protected TokenWrapper doInBackground(String ... codes) {
 
         try {
 
-            ClientResource resource = new ClientResource("http://mlha-139.sin.cvut.cz:8080/user_registration");
+            ClientResource resource = new ClientResource("http://mlha-139.sin.cvut.cz:8080/new_token");
             //resource.post( (new NewTokenJson(codes[0]))  );
             //return resource.get(TokenWrapper.class);
             UserRegistrator ur = resource.wrap(UserRegistrator.class);
 
-            NewTokenByRegisterJson message = new NewTokenByRegisterJson(params[0], params[1]);
+            NewTokenJson token = new NewTokenJson(codes[0]);
 
-            Log.e("TOKSTRING", (message.toString()));
-            return ur.retrieveTokenByRegister(message);
+            Log.e("TOKSTRING", (token.toString()));
+//            Log.e("BYY", ur.retrieveToken_3(token));
+//            return null;
+            return ur.retrieveToken(token);
+            //Log.e("TOKSTRING", (new NewTokenJson(codes[0])).toString());
+            //return ur.retrieveToken_2( (new NewTokenJson(codes[0])).toString() );
         } catch (Exception e) {
-            Log.e("REGUSERTASK", e.toString());
+            Log.e("RETRTOKENTASK", e.toString());
         }
         return null;
     }
@@ -54,7 +59,7 @@ public class UserRegistrationTask extends AsyncTask<String, Void, TokenWrapper> 
             }
         }
 
-        delegate.onUserRetrieveTokenTaskCompleted(token);
+        delegate.onRetrieveTokenTaskCompleted(token);
     }
 }
 
