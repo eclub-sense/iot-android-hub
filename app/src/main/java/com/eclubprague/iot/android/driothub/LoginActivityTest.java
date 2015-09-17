@@ -2,14 +2,18 @@ package com.eclubprague.iot.android.driothub;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.eclubprague.iot.android.driothub.cloud.TokenWrapper;
+import com.eclubprague.iot.android.driothub.services.BuiltInSensorsProviderService;
 import com.eclubprague.iot.android.driothub.tasks.RetrieveTokenTask;
 import com.eclubprague.iot.android.driothub.tasks.UserRegistrationTask;
 import com.eclubprague.iot.android.driothub.ui.login.UserRegistrationDialog;
@@ -201,11 +205,13 @@ UserRegistrationDialog.TaskDelegate, UserRegistrationTask.TaskDelegate {
         new RetrieveCodeTask().execute(email);
     }
 
-
-    public void startApplication(TokenWrapper token) {
+    private void startApplication(TokenWrapper token) {
         Intent intent = new Intent(LoginActivityTest.this, MainActivity.class);
-        intent.putExtra("token", token.toString());
+        // TODO: do NOT pass these to MainActivity, instead use some storage
+        intent.putExtra("token", token.getAccess_token());
+        intent.putExtra("email", email);
         startActivity(intent);
+
         this.finish();
     }
 }
