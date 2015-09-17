@@ -477,7 +477,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     private String UUID;
     private User USER;
     //private final String WSURI = "ws://147.32.107.139:8080/events";
-    private final String WSURI = "ws://147.32.107.139:1337";
+    private final String WSURI = "ws://147.32.107.139:9002";
     //private final String WSURI = "ws://192.168.200.19:9002/";
     //private final String WSURI = "ws://echo.websocket.org";
     private Hub THISHUB;

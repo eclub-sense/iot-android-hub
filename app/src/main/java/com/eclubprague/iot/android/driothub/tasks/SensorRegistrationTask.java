@@ -31,7 +31,7 @@ public class SensorRegistrationTask extends AsyncTask<Sensor, Void, Void> {
 
             Log.e("TOKEN", token);
             ClientResource resource = new ClientResource("http://147.32.107.139:8080/sensor_registration");
-            resource.setQueryValue("id_token", token);
+            resource.setQueryValue("access_token", token);
 
             SensorRegistrator sr = resource.wrap(SensorRegistrator.class);
             sr.store(sensors[0]);
