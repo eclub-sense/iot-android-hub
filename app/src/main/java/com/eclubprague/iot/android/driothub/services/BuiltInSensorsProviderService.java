@@ -98,9 +98,10 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
     }
 
     private void updateBeaconSensor(Beacon beacon) {
-        if(builtInSensors != null) {
+        if(builtInSensors != null && mConnectionRef != null) {
             builtInSensors.put(beacon.getUuid(),
                     beacon);
+            builtInSensors.get(beacon.getUuid()).setTimer(USER, UUID, 2, mConnectionRef);
         }
     }
 
@@ -173,7 +174,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                 stringToInt(android.os.Build.MODEL)*(stringToInt(android_id)%9 + 1);
         if(uuid < 0) uuid *= -1;
 
-        UUID = "M" + Integer.toString(uuid);
+        UUID = "m" + Integer.toString(uuid);
 
         /*File file = new File(getFilesDir(), "config.co");
         if (!file.exists()) {
