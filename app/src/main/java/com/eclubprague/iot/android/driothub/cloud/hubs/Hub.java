@@ -14,6 +14,7 @@ public class Hub implements Identificable {
     protected String uuid;
     //@Expose (deserialize = false) protected String status = "connected";
     protected String email;
+    protected String password;
     protected final String type = "LOGIN";
 
 
@@ -23,6 +24,7 @@ public class Hub implements Identificable {
         this.uuid = uuid;
         this.user = user;
         this.email = user.getEmail();
+        this.password = user.getPassword();
     }
 
     @Override

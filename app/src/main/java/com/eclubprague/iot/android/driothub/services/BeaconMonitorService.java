@@ -89,6 +89,13 @@ public class BeaconMonitorService extends Service implements RangeNotifier, Beac
         for(Beacon beacon : collection) {
             Log.d(TAG, "Beacon in range: " + beacon.getBluetoothAddress() + ", " + beacon.getId1() + "," + beacon.getId2());
             detectedBeacons.add(beacon);
+
+            Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+            intent.setAction("com.eclubprague.iot.android.driothub.BeaconsAnnouncement");
+            intent.putExtra("beacon_mac", beacon.getBluetoothAddress());
+            intent.putExtra("beacon_rssi", beacon.getRssi());
+            sendBroadcast(intent);
         }
 
         modifyNotificationForBeacons(detectedBeacons);

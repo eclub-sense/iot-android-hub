@@ -2,8 +2,10 @@ package com.eclubprague.iot.android.driothub.services;
 
 import android.app.Activity;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.cloud.sensors.AmbientThermometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Barometer;
+import com.eclubprague.iot.android.driothub.cloud.sensors.Beacon;
 import com.eclubprague.iot.android.driothub.cloud.sensors.GravitySensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Gyroscope;
 import com.eclubprague.iot.android.driothub.cloud.sensors.HumiditySensor;
@@ -76,6 +79,30 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     private String token = "";
     private String email = "";
+
+    class BeaconsAnnouncementReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String bmac = intent.getExtras().getString("beacon_mac")
+                    .replace(":", "");
+            int brssi = intent.getExtras().getInt("beacon_rssi");
+
+            final Beacon beacon = new Beacon(bmac, "0", BuiltInSensorsProviderService.this.THISHUB);
+            beacon.setEmail(BuiltInSensorsProviderService.this.email);
+            beacon.setData(new float[]{brssi});
+
+            Log.d("BeaconAR", "Received beacon " + beacon.printData());
+            BuiltInSensorsProviderService.this.updateBeaconSensor(beacon);
+        }
+    }
+
+    private void updateBeaconSensor(Beacon beacon) {
+        if(builtInSensors != null) {
+            builtInSensors.put(beacon.getUuid(),
+                    beacon);
+        }
+    }
 
     @Override
     public void onCreate() {
@@ -137,7 +164,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         Log.e("O_EMAIL", email);
 
 
-        USER = new User(email);
+        USER = new User(email, "ahoj");
 
         String android_id = Settings.Secure.getString(getContentResolver(),
                 Settings.Secure.ANDROID_ID);
@@ -186,6 +213,10 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         mConnectionRef.add(mConnection);
 
         initBuiltInSensorsCollection();
+
+        // Broadcast receiver for BEACONS
+        registerReceiver(new BeaconsAnnouncementReceiver(),
+                new IntentFilter("com.eclubprague.iot.android.driothub.BeaconsAnnouncement"));
     }
 
     private int stringToInt(String param) {
@@ -476,8 +507,8 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     private String UUID;
     private User USER;
-    //private final String WSURI = "ws://147.32.107.139:8080/events";
-    private final String WSURI = "ws://147.32.107.139:9002";
+    private final String WSURI = "ws://147.32.107.139:8080/events";
+    //private final String WSURI = "ws://147.32.107.139:9002";
     //private final String WSURI = "ws://192.168.200.19:9002/";
     //private final String WSURI = "ws://echo.websocket.org";
     private Hub THISHUB;
