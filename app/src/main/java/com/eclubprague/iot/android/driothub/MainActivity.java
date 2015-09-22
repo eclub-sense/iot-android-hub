@@ -134,6 +134,8 @@ public class MainActivity extends ActionBarActivity {
         if(id == R.id.action_stop_service) {
             try {
                 unbindService(connection);
+                Intent intent2 = new Intent(this, BeaconMonitorService.class);
+                stopService(intent2);
                 builtInSensorsProviderService.stopSelf();
             } catch (Exception e) {
                 Log.e("STOP",e.toString());
