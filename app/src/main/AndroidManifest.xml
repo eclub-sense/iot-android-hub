@@ -23,6 +23,9 @@
         <service
             android:name=".services.BuiltInSensorsProviderService"
             android:enabled="true" />
+        <service
+            android:name=".services.BeaconMonitorService"
+            android:enabled="true" />
 
         <activity
             android:name=".LoginActivityTest"

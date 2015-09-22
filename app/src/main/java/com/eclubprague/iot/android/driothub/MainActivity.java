@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
+import com.eclubprague.iot.android.driothub.services.BeaconMonitorService;
 import com.eclubprague.iot.android.driothub.services.BuiltInSensorsProviderService;
 import com.eclubprague.iot.android.driothub.ui.BuiltInSensorsListViewAdapter;
 import com.eclubprague.iot.android.driothub.ui.SensorDialog;
@@ -92,6 +93,13 @@ public class MainActivity extends ActionBarActivity {
         intent.putExtra("email", email);
         bindService(intent, connection, android.content.Context.BIND_AUTO_CREATE);
         startService(intent);
+
+        // Beacon service
+        Intent intent2 = new Intent(this, BeaconMonitorService.class);
+        intent2.putExtra("token", accessToken);
+        intent2.putExtra("email", email);
+        //bindService(intent2, null, android.content.Context.BIND_AUTO_CREATE);
+        startService(intent2);
     }
 
     @Override

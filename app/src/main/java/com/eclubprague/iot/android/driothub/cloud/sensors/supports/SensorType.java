@@ -19,7 +19,7 @@ public class SensorType {
     public static final int ROTATION = 16;
     public static final int HUMIDITY = 17;
     public static final int AMBIENT_THERMOMETER = 18;
-
+    public static final int BEACON = 130;
 
     public static final String getStringSensorType(int type) {
         switch(type) {

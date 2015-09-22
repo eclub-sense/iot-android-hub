@@ -4,6 +4,7 @@ import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Accelerometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.AmbientThermometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Barometer;
+import com.eclubprague.iot.android.driothub.cloud.sensors.Beacon;
 import com.eclubprague.iot.android.driothub.cloud.sensors.ESCLed;
 import com.eclubprague.iot.android.driothub.cloud.sensors.ESCThermometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.GPS;
@@ -52,6 +53,8 @@ public class VirtualSensorCreator {
                 return new HumiditySensor(uuid, secret, hub);
             case SensorType.AMBIENT_THERMOMETER:
                 return new AmbientThermometer(uuid, secret, hub);
+            case SensorType.BEACON:
+                return new Beacon(uuid, secret, hub);
             case 2:
                 return new Accelerometer(uuid, secret, hub);
             default:

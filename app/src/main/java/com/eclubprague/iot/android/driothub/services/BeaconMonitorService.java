@@ -39,15 +39,14 @@ public class BeaconMonitorService extends Service implements RangeNotifier, Beac
 
     @Override
     public void onCreate() {
+        buildOngoingNotification();
+
         BeaconManager beaconManager = BeaconManager.getInstanceForApplication(this);
         // To detect proprietary beacons, you must add a line like below corresponding to your beacon
         // type.  Do a web search for "setBeaconLayout" to get the proper expression.
         // EDDYSTONE beacons
         beaconManager.getBeaconParsers().add(new BeaconParser()
                 .setBeaconLayout("s:0-1=feaa,m:2-2=00,p:3-3:-41,i:4-13,i:14-19"));
-
-        beaconManager.setBackgroundScanPeriod(5000);
-        beaconManager.setBackgroundBetweenScanPeriod(15000);
 
         beaconManager.setRangeNotifier(this);
         beaconManager.bind(this);
@@ -65,6 +64,7 @@ public class BeaconMonitorService extends Service implements RangeNotifier, Beac
                 e.printStackTrace();
             }
         }
+        destroyOngoingNotification();
         Log.d(TAG, "Finished ranging for target region");
     }
 
@@ -73,6 +73,8 @@ public class BeaconMonitorService extends Service implements RangeNotifier, Beac
         // wake up the app when any beacon is seen (we can specify specific id filers in the parameters below)
         region = new Region("driothub.beacons", null, null, null);
         try {
+            BeaconManager.getInstanceForApplication(this).setBackgroundScanPeriod(3000);
+            BeaconManager.getInstanceForApplication(this).setBackgroundBetweenScanPeriod(2500);
             BeaconManager.getInstanceForApplication(this)
                     .startRangingBeaconsInRegion(region);
         } catch (RemoteException e) {
