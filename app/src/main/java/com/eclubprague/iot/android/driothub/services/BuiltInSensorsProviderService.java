@@ -173,7 +173,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                 stringToInt(android.os.Build.MODEL)*(stringToInt(android_id)%9 + 1);
         if(uuid < 0) uuid *= -1;
 
-        UUID = Integer.toString(uuid);
+        UUID = "M" + Integer.toString(uuid);
 
         /*File file = new File(getFilesDir(), "config.co");
         if (!file.exists()) {
@@ -507,8 +507,8 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     private String UUID;
     private User USER;
-    private final String WSURI = "ws://147.32.107.139:8080/events";
-    //private final String WSURI = "ws://147.32.107.139:9002";
+    //private final String WSURI = "ws://147.32.107.139:8080/events";
+    private final String WSURI = "ws://147.32.107.139:9002";
     //private final String WSURI = "ws://192.168.200.19:9002/";
     //private final String WSURI = "ws://echo.websocket.org";
     private Hub THISHUB;
