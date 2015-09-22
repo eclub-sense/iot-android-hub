@@ -99,9 +99,13 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
 
     private void updateBeaconSensor(Beacon beacon) {
         if(builtInSensors != null && mConnectionRef != null) {
-            builtInSensors.put(beacon.getUuid(),
-                    beacon);
-            builtInSensors.get(beacon.getUuid()).setTimer(USER, UUID, 2, mConnectionRef);
+            if(!builtInSensors.containsKey(beacon.getUuid())) {
+                builtInSensors.put(beacon.getUuid(),
+                        beacon);
+                builtInSensors.get(beacon.getUuid()).setTimer(USER, UUID, 2, mConnectionRef);
+            } else {
+                builtInSensors.get(beacon.getUuid()).setData(new float[] {beacon.getRssi()});
+            }
         }
     }
 
