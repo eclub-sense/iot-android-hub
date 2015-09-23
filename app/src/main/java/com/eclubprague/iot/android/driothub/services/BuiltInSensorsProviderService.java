@@ -104,6 +104,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
                         beacon);
             }
 
+            builtInSensors.get(beacon.getUuid()).setData(new float[] { beacon.getRssi() });
             builtInSensors.get(beacon.getUuid()).sendData(USER, UUID, mConnectionRef);
         }
     }
