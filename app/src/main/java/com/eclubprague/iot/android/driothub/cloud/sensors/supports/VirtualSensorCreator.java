@@ -15,8 +15,10 @@ import com.eclubprague.iot.android.driothub.cloud.sensors.LightSensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.LinearAccelerometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Magnetometer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.ProximitySensor;
+import com.eclubprague.iot.android.driothub.cloud.sensors.PublicSensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.RotationSensor;
 import com.eclubprague.iot.android.driothub.cloud.sensors.Sensor;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.cloud_entities.SensorEntity;
 
 /**
  * Created by Dat on 12.8.2015.
@@ -59,6 +61,15 @@ public class VirtualSensorCreator {
                 return new Accelerometer(uuid, secret, hub);
             default:
                 return null;
+        }
+    }
+
+    public static Sensor createSensorInstance(SensorEntity entity) {
+        switch (entity.getType()) {
+            case SensorType.BEACON:
+                return new Beacon(entity);
+            default:
+                return new PublicSensor(entity);
         }
     }
 }

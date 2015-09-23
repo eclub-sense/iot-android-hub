@@ -1,6 +1,9 @@
 package com.eclubprague.iot.android.driothub.cloud.sensors;
 
 //import java.lang.ref.WeakReference;
+import android.util.Log;
+
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +12,8 @@ import java.util.List;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorDataSendingTimer;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.WSDataWrapper;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.cloud_entities.SensorEntity;
 import com.eclubprague.iot.android.driothub.cloud.user.User;
 import com.google.gson.Gson;
 
@@ -28,7 +33,7 @@ public abstract class Sensor implements Identificable {
     protected String uuid;
     protected String hub_uuid;
     protected String secret;
-    protected String type = Integer.toString(SensorType.THERMOMETER);
+    protected int type = SensorType.THERMOMETER;
     protected String s_type = "sensor";
     protected transient int incr;
     protected transient SensorDataSendingTimer timer;
@@ -50,12 +55,31 @@ public abstract class Sensor implements Identificable {
 
     }
 
+    protected Sensor(SensorEntity entity) {
+        try {
+            //this.hubRef = new WeakReference<Hub>(new Hub(entity.getHub().getUuid()));
+            //this.hub_uuid = hubRef.get().getUuid();
+        } catch (Exception e) {
+            Log.e("EXC", e.toString());
+        }
+        this.uuid = entity.getUuid();
+        this.type = entity.getType();
+        this.s_type = SensorType.getStringSensorType(type);
+        this.secret = "secret";
+        //this.description = entity.getDescription();
+        //this.access = entity.getAccess();
+        //this.owner = entity.getOwnerEmail();
+//		if(entity.getActions() != null && entity.getActions().size() > 0) {
+//			this.actions = entity.getActions();
+//		}
+    }
+
     protected Sensor(String uuid, int type, String secret, Hub hub) {
         //this.hubRef.add(hub);
         this.hub = hub;
         this.hub_uuid = /*hubRef.get(0).getUuid()*/ hub.getUuid();
         this.uuid = uuid;
-        this.type = Integer.toString(type);
+        this.type = type;
         this.s_type = SensorType.getStringSensorType(type);
         this.secret = secret;
     }
@@ -89,7 +113,7 @@ public abstract class Sensor implements Identificable {
         return String.format("%08d", uuid);
     }*/
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
@@ -147,6 +171,21 @@ public abstract class Sensor implements Identificable {
     @Override
     public String toString() {
         return new Gson().toJson(this);
+    }
+
+        public void sendData(User user, String uuid, ArrayList<WebSocketConnection> mConnectionRef) {
+        //TODO SEND SENSOR DATA
+        if (mConnectionRef != null && mConnectionRef.size() > 0 &&
+                mConnectionRef.get(0)/*connection*/.isConnected()) {
+
+            List<Sensor> sensorList = new ArrayList<>();
+            sensorList.add(this);
+            WSDataWrapper data = new WSDataWrapper(sensorList, hub_uuid);
+
+            Log.e("WSDATA", data.toString());
+
+            mConnectionRef.get(0)/*connection*/.sendTextMessage(data.toString());
+        }
     }
 }
 

@@ -3,6 +3,7 @@ package com.eclubprague.iot.android.driothub.cloud.sensors;
 import com.eclubprague.iot.android.driothub.cloud.hubs.Hub;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.DataNameValuePair;
 import com.eclubprague.iot.android.driothub.cloud.sensors.supports.SensorType;
+import com.eclubprague.iot.android.driothub.cloud.sensors.supports.cloud_entities.SensorEntity;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -27,6 +28,9 @@ public class Beacon extends Sensor {
 
     public Beacon() {
         super();
+    }
+    public Beacon(SensorEntity entity) {
+        super(entity);
     }
     public Beacon(String uuid, String secret, Hub hub) {
         super(uuid, SensorType.BEACON, secret, hub);
