@@ -25,6 +25,9 @@ public interface RegisteredSensors {
     public AllSensors retrieve_AllSensors();
 
     @Get("json")
+    public AllSensors retrieve_AllSensors(int type);
+
+    @Get("json")
     public SensorAndData retrieve_SensorAndData();
 
     @Get("json")

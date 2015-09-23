@@ -102,10 +102,9 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
             if(!builtInSensors.containsKey(beacon.getUuid())) {
                 builtInSensors.put(beacon.getUuid(),
                         beacon);
-                builtInSensors.get(beacon.getUuid()).setTimer(USER, UUID, 2, mConnectionRef);
-            } else {
-                builtInSensors.get(beacon.getUuid()).setData(new float[] {beacon.getRssi()});
             }
+
+            builtInSensors.get(beacon.getUuid()).sendData(USER, UUID, mConnectionRef);
         }
     }
 
@@ -482,7 +481,7 @@ public class BuiltInSensorsProviderService extends Service implements GoogleApiC
         List<Sensor> sensors = getBuiltInSensors();
         for (int i = 0; i < sensors.size(); i++) {
             Log.d("SensorReg", sensors.get(i).toString());
-            if(Integer.parseInt(sensors.get(i).getType()) == SensorType.LIGHT) {
+            if(sensors.get(i).getType() == SensorType.LIGHT) {
                 new SensorRegistrationTask(token, email).execute(sensors.get(i));
                 //new TestingTask().execute(token);
                 break;
