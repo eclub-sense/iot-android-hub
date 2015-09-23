@@ -123,14 +123,17 @@ public abstract class Sensor implements Identificable {
 
     public void setTimer(User user, String hub_uuid, int seconds, /*WebSocketConnection webSocketConnection*/
                          ArrayList<WebSocketConnection> connectionRef) {
-//        ArrayList<Sensor> sensorRef = new ArrayList<>();
-//        sensorRef.add(this);
         timer = new SensorDataSendingTimer(this,
                 user, hub_uuid, seconds, connectionRef);
     }
 
+    public void stopTimer() {
+        timer.stopTimerTask();
+    }
+
     public void setSeconds(int seconds) {
         this.seconds = seconds;
+        timer.setPeriod(seconds);
     }
 
     public int getSeconds() {
