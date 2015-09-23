@@ -12,6 +12,16 @@ import java.util.List;
  */
 public class Beacon extends Sensor {
 
+    class BeaconDeviceDetails {
+        public BeaconDeviceDetails(String email, float rssi) {
+            this.email = email;
+            this.rssi = rssi;
+        }
+
+        String email;
+        float rssi;
+    }
+
     protected String email;
     protected float rssi = 0;
 
@@ -51,9 +61,10 @@ public class Beacon extends Sensor {
 
     @Override
     public List<DataNameValuePair> getMeasured() {
+        Gson gson = new Gson();
+        BeaconDeviceDetails bdd = new BeaconDeviceDetails(email, rssi);
         measured.clear();
-        measured.add(new DataNameValuePair("email", email));
-        measured.add(new DataNameValuePair("rssi", Float.toString(rssi)));
+        measured.add(new DataNameValuePair("device", gson.toJson(bdd)));
         return measured;
     }
 
